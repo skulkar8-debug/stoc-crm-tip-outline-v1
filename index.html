@@ -25,21 +25,16 @@
   --sh2:0 4px 14px rgba(0,0,0,.10);
   --sh3:0 10px 32px rgba(0,0,0,.14);
 }
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:13px;color:var(--text)}
-#app{display:flex;height:100vh;overflow:hidden}
+html{height:100%;height:-webkit-fill-available}
+body{height:100%;height:-webkit-fill-available;overflow:hidden;position:fixed;width:100%;background:var(--bg);font-family:var(--font);font-size:13px;color:var(--text)}
+#app{display:flex;height:100vh;height:100dvh;width:100vw;overflow:hidden;position:relative}
 
 /* ──────────────── SIDEBAR ──────────────── */
 #sb{width:196px;min-width:196px;background:var(--navy);display:flex;flex-direction:column;overflow:hidden;box-shadow:2px 0 12px rgba(0,0,0,.2);z-index:10}
 .sb-top{padding:13px 12px 10px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:9px;min-height:52px}
 /* LOGO MARK */
-.logo-box{width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
-.logo-box img{width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1)}
-.logo-s-text{font-size:16px;font-weight:800;color:#fff;letter-spacing:-1px}
-.logo-wordmark{display:flex;flex-direction:column;gap:0}
-.logo-name{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1}
-.logo-tag{font-size:8px;font-weight:400;color:rgba(255,255,255,.38);letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
 
-.sb-nav{padding:10px 6px;flex:1;overflow-y:auto}
+.sb-nav{padding:10px 6px;flex:1;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch}
 .sb-section-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:8px 8px 3px}
 .sbi{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.5);transition:all .13s;margin-bottom:1px;font-size:12.5px;font-weight:400}
 .sbi:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
@@ -54,14 +49,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .sb-urole{font-size:9.5px;color:rgba(255,255,255,.35)}
 
 /* ──────────────── MAIN ──────────────── */
-#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0}
 
 /* TOPBAR */
 #topbar{height:52px;min-height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px;box-shadow:var(--sh);z-index:5}
-.tb-logo-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.tb-logo-box{width:28px;height:28px;border-radius:6px;background:var(--navy);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
-.tb-logo-box img{width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1)}
-.tb-logo-s{font-size:14px;font-weight:800;color:#fff}
 .tb-name{font-size:14px;font-weight:700;color:var(--navy)}
 .tb-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
 .tb-badge{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
@@ -75,13 +66,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .btn-gr:hover{background:var(--green2)}
 
 /* TAB NAV */
-#tabnav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 16px;gap:2px;overflow-x:auto;flex-shrink:0}
-.tnav{display:flex;align-items:center;gap:5px;padding:10px 13px;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s;white-space:nowrap}
-.tnav:hover{color:var(--text2)}.tnav.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:600}
-.tnav-ic{font-size:13px}
 
 /* FILTER BAR — DROPDOWNS */
-#filterbar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+#filterbar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#filterbar::-webkit-scrollbar{display:none}
 .fsearch{display:flex;align-items:center;gap:7px;background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);padding:6px 11px;font-size:12px;font-family:var(--font);color:var(--text3);transition:border .13s}
 .fsearch:focus-within{border-color:#AFC5F5}
 .fsearch input{background:none;border:none;outline:none;font-size:12px;font-family:var(--font);color:var(--text);width:180px}
@@ -92,10 +80,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .f-right{margin-left:auto;display:flex;align-items:center;gap:8px}
 
 /* CONTENT */
-#content{flex:1;display:flex;overflow:hidden}
+#content{flex:1;display:flex;overflow:hidden;min-height:0;position:relative}
 
 /* STATS */
-.stats-row{background:var(--surface);border-bottom:1px solid var(--border);display:flex;flex-shrink:0;overflow-x:auto}
+.stats-row{background:var(--surface);border-bottom:1px solid var(--border);display:flex;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .sc{padding:9px 18px;border-right:1px solid var(--border);flex-shrink:0;min-width:90px}
 .sv{font-size:20px;font-weight:700;letter-spacing:-.5px;line-height:1}
 .sl{font-size:10px;color:var(--text3);margin-top:1px}
@@ -103,8 +91,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .up{color:var(--green)}.dn{color:var(--coral)}.ne{color:var(--text4)}
 
 /* ──────────────── PIPELINE ──────────────── */
-#pipe-wrap{flex:1;overflow-x:auto;overflow-y:hidden;padding:14px 14px;display:flex;gap:10px;align-items:flex-start}
-.pcol{min-width:216px;max-width:216px;display:flex;flex-direction:column;gap:6px}
+#pipe-wrap{flex:1;overflow-x:auto;overflow-y:auto;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;min-width:0;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-x pan-y}
+.pcol{min-width:214px;max-width:214px;flex-shrink:0;display:flex;flex-direction:column;gap:6px}
 .pcol-h{padding:7px 11px;border-radius:var(--r);display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--sh)}
 .pcol-name{font-size:11.5px;font-weight:600;flex:1}
 .pcol-ct{font-size:10px;font-family:var(--mono);padding:1px 7px;border-radius:20px}
@@ -125,7 +113,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .pc-deals{font-size:9.5px;color:var(--text4);font-family:var(--mono)}
 
 /* ──────────────── LIST VIEW ──────────────── */
-#list-wrap{flex:1;overflow-y:auto;display:none}
+#list-wrap{flex:1;overflow-y:auto;overflow-x:auto;display:none;min-height:0;-webkit-overflow-scrolling:touch}
 .lt{width:100%;border-collapse:collapse}
 .lt th{padding:8px 12px;text-align:left;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid rgba(255,255,255,.12);position:sticky;top:0;z-index:3;cursor:pointer;white-space:nowrap}
 .lt th.gh{background:var(--green);color:#fff}.lt th.ph{background:var(--purple);color:#fff}
@@ -136,14 +124,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .mono{font-family:var(--mono);font-size:11px}
 
 /* ──────────────── EMAIL VIEW ──────────────── */
-#email-wrap{flex:1;display:none;flex-direction:column;overflow:hidden}
+#email-wrap{flex:1;display:none;flex-direction:column;overflow:hidden;min-height:0}
 .email-toolbar{padding:9px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0}
-.email-body{flex:1;display:flex;overflow:hidden}
-.email-sb{width:188px;min-width:188px;border-right:1px solid var(--border);background:var(--surf2);display:flex;flex-direction:column;padding:8px 7px;overflow-y:auto;flex-shrink:0}
+.email-body{flex:1;display:flex;overflow:hidden;min-height:0}
+.email-sb{width:188px;min-width:188px;border-right:1px solid var(--border);background:var(--surf2);display:flex;flex-direction:column;padding:8px 7px;overflow-y:auto;flex-shrink:0;-webkit-overflow-scrolling:touch}
 .efolder{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:var(--r);cursor:pointer;font-size:12.5px;color:var(--text2);transition:all .12s;font-family:var(--font)}
 .efolder:hover{background:var(--surf3)}.efolder.on{background:var(--blue-l);color:var(--blue);font-weight:600}
 .efolder-ct{margin-left:auto;font-size:9.5px;font-family:var(--mono);background:var(--blue);color:#fff;padding:1px 6px;border-radius:20px}
-.email-list{width:280px;min-width:280px;border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;background:var(--surface)}
+.email-list{width:280px;min-width:280px;border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;background:var(--surface);-webkit-overflow-scrolling:touch}
 .eitem{padding:11px 13px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
 .eitem:hover{background:var(--surf2)}.eitem.on{background:var(--blue-l);border-left:3px solid var(--blue);padding-left:10px}
 .eitem.unread .ei-subj{font-weight:700;color:var(--text)}
@@ -151,7 +139,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .ei-prev{font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ei-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
 .ei-ts{font-size:10px;font-family:var(--mono);color:var(--text3)}
-.email-thread{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--surf2)}
+.email-thread{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--surf2);min-height:0;min-width:0;-webkit-overflow-scrolling:touch}
 .thread-header{padding:14px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
 .th-subj{font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px}
 .th-meta{font-size:11.5px;color:var(--text3)}
@@ -170,12 +158,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .c-bar{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 
 /* ──────────────── CALENDAR VIEW ──────────────── */
-#cal-wrap{flex:1;overflow:hidden;display:none;flex-direction:column}
+#cal-wrap{flex:1;overflow:hidden;display:none;flex-direction:column;min-height:0}
 .cal-header{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
 .cal-nav-btn{width:28px;height:28px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);transition:all .12s}
 .cal-nav-btn:hover{background:var(--surf3)}
 .cal-month{font-size:16px;font-weight:700;color:var(--navy)}
-.cal-body{flex:1;overflow:auto;padding:16px}
+.cal-body{flex:1;overflow:auto;padding:14px;min-height:0;-webkit-overflow-scrolling:touch}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border-radius:var(--r2);overflow:hidden;border:1px solid var(--border)}
 .cal-dow{background:var(--navy);color:rgba(255,255,255,.7);font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:8px 4px}
 .cal-cell{background:var(--surface);min-height:96px;padding:6px 7px;cursor:pointer;transition:background .1s;position:relative}
@@ -192,12 +180,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .leg-dot{width:10px;height:10px;border-radius:3px}
 
 /* ──────────────── MAP VIEW ──────────────── */
-#map-wrap{flex:1;display:none;flex-direction:column;overflow:hidden}
+#map-wrap{flex:1;display:none;flex-direction:column;overflow:hidden;min-height:0}
 .map-toolbar{padding:9px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
 .map-legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
 .map-leg-item{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text2)}
 .map-leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-#map-container{flex:1;position:relative}
+#map-container{flex:1;position:relative;min-height:0}
 .maplibregl-popup-content{font-family:var(--font)!important;padding:12px 14px!important;border-radius:10px!important;box-shadow:0 8px 24px rgba(0,0,0,.14)!important;border:1px solid var(--border);min-width:200px}
 .map-popup-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px}
 .map-popup-type{font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
@@ -207,8 +195,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .map-marker:hover{transform:scale(1.15)}
 
 /* ──────────────── DETAIL PANEL ──────────────── */
-#dp{width:420px;min-width:420px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);box-shadow:-3px 0 12px rgba(0,0,0,.07)}
+#dp{position:fixed;top:0;right:0;width:420px;height:100vh;height:100dvh;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transform:translateX(420px);transition:transform .26s cubic-bezier(.4,0,.2,1);box-shadow:-4px 0 20px rgba(0,0,0,.12);z-index:200}
 #dp.open{transform:translateX(0)}
+#dp-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:199;display:none;backdrop-filter:blur(1px)}
+#dp-backdrop.show{display:block}
 .dp-head{background:var(--navy);padding:14px 15px;flex-shrink:0}
 .dp-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
 .dp-ic{width:38px;height:38px;border-radius:var(--r);background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
@@ -224,7 +214,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .dp-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 15px;flex-shrink:0}
 .dtab{padding:9px 11px;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s}
 .dtab:hover{color:var(--text2)}.dtab.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:600}
-.dp-body{flex:1;overflow-y:auto;padding:13px 15px;display:flex;flex-direction:column;gap:12px}
+.dp-body{flex:1;overflow-y:auto;padding:13px 15px;display:flex;flex-direction:column;gap:12px;min-height:0;-webkit-overflow-scrolling:touch}
 
 /* DETAIL SECTIONS */
 .ds{display:flex;flex-direction:column;gap:5px}
@@ -317,13 +307,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 <!-- ──────────── SIDEBAR ──────────── -->
 <nav id="sb">
   <div class="sb-top">
-    <div class="logo-box" id="sb-logo-box">
-      <span class="logo-s-text" id="sb-logo-fallback">S</span>
-    </div>
-    <div class="logo-wordmark">
-      <div class="logo-name">STOC</div>
-      <div class="logo-tag">Advisory</div>
-    </div>
+    <div id="sb-logo-svg" style="display:flex;align-items:center;flex-shrink:0"><svg width="116" height="30" viewBox="0 0 116 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="30" height="30" rx="7" fill="rgba(255,255,255,0.13)"/>
+  <rect x=".75" y=".75" width="28.5" height="28.5" rx="6.25" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <text x="15" y="21" font-family="Poppins,sans-serif" font-weight="800" font-size="16" fill="white" text-anchor="middle">S</text>
+  <text x="39" y="18" font-family="Poppins,sans-serif" font-weight="700" font-size="14" fill="white" letter-spacing="-0.3">STOC</text>
+  <text x="40" y="27" font-family="Poppins,sans-serif" font-weight="400" font-size="7.5" fill="rgba(255,255,255,0.45)" letter-spacing="2">ADVISORY</text>
+</svg></div>
   </div>
   <div class="sb-nav">
     <div class="sb-section-label">Workspace</div>
@@ -342,8 +332,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
     <div class="sbi" onclick="quickFilter('type','All')"><span class="sb-dot" style="background:#9CA3AF"></span>All Types</div>
   </div>
   <div class="sb-foot">
-    <div class="sb-av" style="background:#2E5BE0">KG</div>
-    <div><div class="sb-uname">Karan Gupta</div><div class="sb-urole">Deal Lead</div></div>
+    <div class="sb-av" style="background:#2E7D44">SK</div>
+    <div><div class="sb-uname">Srushti Kulkarni</div><div class="sb-urole">Deal Lead</div></div>
   </div>
 </nav>
 
@@ -351,11 +341,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 <div id="main">
   <!-- TOPBAR -->
   <div id="topbar">
-    <div class="tb-logo-wrap">
-      <div class="tb-logo-box" id="tb-logo-box">
-        <span class="tb-logo-s" id="tb-logo-fb">S</span>
-      </div>
-      <div class="tb-name">STOC — Relationship CRM</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+      <div id="tb-logo-svg" style="display:flex;align-items:center"><svg width="116" height="30" viewBox="0 0 116 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="30" height="30" rx="7" fill="#17244E"/>
+  <text x="15" y="21" font-family="Poppins,sans-serif" font-weight="800" font-size="16" fill="white" text-anchor="middle">S</text>
+  <text x="39" y="18" font-family="Poppins,sans-serif" font-weight="700" font-size="14" fill="#17244E" letter-spacing="-0.3">STOC</text>
+  <text x="40" y="27" font-family="Poppins,sans-serif" font-weight="400" font-size="7.5" fill="#6B7280" letter-spacing="2">ADVISORY</text>
+</svg></div>
+      <div style="width:1px;height:22px;background:var(--border)"></div>
+      <div class="tb-name">Relationship CRM</div>
     </div>
     <div class="tb-sep"></div>
     <span class="tb-badge badge-active">● ACTIVE</span>
@@ -367,15 +361,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   </div>
 
   <!-- TAB NAV -->
-  <div id="tabnav">
-    <div class="tnav on" id="tn-pipeline" onclick="setView('pipeline',this)"><span class="tnav-ic">⬡</span>Pipeline</div>
-    <div class="tnav" id="tn-list" onclick="setView('list',this)"><span class="tnav-ic">≡</span>All Records</div>
-    <div class="tnav" id="tn-email" onclick="setView('email',this)"><span class="tnav-ic">✉</span>Emails</div>
-    <div class="tnav" id="tn-cal" onclick="setView('cal',this)"><span class="tnav-ic">📅</span>Calendar</div>
-    <div class="tnav" id="tn-map" onclick="setView('map',this)"><span class="tnav-ic">🗺</span>Map View</div>
-    <div class="tnav" onclick="toast('Analytics coming soon')"><span class="tnav-ic">◉</span>Analytics</div>
-    <div class="tnav" onclick="toast('Settings coming soon')"><span class="tnav-ic">⚙</span>Settings</div>
-  </div>
+
 
   <!-- STATS STRIP -->
   <div class="stats-row" id="stats-strip"></div>
@@ -399,7 +385,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
     </select>
     <select class="fsel" id="f-owner" onchange="applyFilters()">
       <option value="All">All Owners</option>
-      <option>Peyton Evans</option><option>Lucius Burch</option><option>Andrew Swihart</option><option>Karan Gupta</option>
+      <option>Peyton Evans</option><option>Lucius Burch</option><option>Andrew Swihart</option><option>Srushti Kulkarni</option>
     </select>
     <select class="fsel" id="f-gtm" onchange="applyFilters()">
       <option value="All">GTM Score</option>
@@ -452,47 +438,42 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   </div>
 </div>
 </div>
+<div id="dp-backdrop" onclick="closeDetail()"></div>
 <div id="toast"></div>
 <script src="https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js"></script>
 <script>
-// ════════════════════════════════════════════════════════
-// LOGO LOADER — try actual STOC logo, fallback to styled text
-// ════════════════════════════════════════════════════════
+
+// Logo loader — tries real STOC logo from browser, falls back to embedded SVG
 (function(){
-  const urls = [
-    'https://www.stocadvisory.com/_next/image?url=%2Fstoc-main-logo-cropped.png&w=256&q=75',
-    'https://www.stocadvisory.com/stoc-main-logo-cropped.png',
-  ];
-  let tried = 0;
-  function tryLoad(){
-    if(tried >= urls.length) return;
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = function(){
-      // SUCCESS — replace the box with the real logo
-      ['sb-logo-box','tb-logo-box'].forEach(id=>{
-        const box = document.getElementById(id);
-        if(!box) return;
-        box.innerHTML = '';
-        const i = document.createElement('img');
-        i.src = urls[tried];
-        i.style.cssText = 'width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1)';
-        box.appendChild(i);
-      });
-    };
-    img.onerror = function(){ tried++; tryLoad(); };
-    img.src = urls[tried];
-  }
-  tryLoad();
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function(){
+    const dataURI = (function(){
+      try {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        c.getContext('2d').drawImage(img,0,0);
+        return c.toDataURL('image/png');
+      } catch(e){ return img.src; }
+    })();
+    // Sidebar: white (inverted) version
+    const sbEl = document.getElementById('sb-logo-svg');
+    if(sbEl) sbEl.innerHTML = '<img src="'+dataURI+'" style="height:26px;max-width:120px;object-fit:contain;filter:brightness(0) invert(1)" alt="STOC">';
+    // Topbar: original colors
+    const tbEl = document.getElementById('tb-logo-svg');
+    if(tbEl) tbEl.innerHTML = '<img src="'+dataURI+'" style="height:24px;max-width:110px;object-fit:contain" alt="STOC">';
+  };
+  img.src = 'https://www.stocadvisory.com/_next/image?url=%2Fstoc-main-logo-cropped.png&w=256&q=75';
 })();
+
 
 // ════════════════════════════════════════════════════════
 // CONSTANTS
 // ════════════════════════════════════════════════════════
 const STAGES = ["New Lead","Outreach Sent","Engaged","Meeting Scheduled","Proposal","Active Partner","Not a Fit"];
 const SC = {"New Lead":"#9CA3AF","Outreach Sent":"#2E5BE0","Engaged":"#147A70","Meeting Scheduled":"#B87100","Proposal":"#5E3FB5","Active Partner":"#2E7D44","Not a Fit":"#C03030"};
-const OC = {"Peyton Evans":"#2E5BE0","Lucius Burch":"#147A70","Andrew Swihart":"#B87100","Karan Gupta":"#2E7D44","":	"#9CA3AF"};
-const OI = {"Peyton Evans":"PE","Lucius Burch":"LB","Andrew Swihart":"AS","Karan Gupta":"KG","":"??","Unassigned":"UN"};
+const OC = {"Peyton Evans":"#2E5BE0","Lucius Burch":"#147A70","Andrew Swihart":"#B87100","Srushti Kulkarni":"#2E7D44","":"#9CA3AF"};
+const OI = {"Peyton Evans":"PE","Lucius Burch":"LB","Andrew Swihart":"AS","Srushti Kulkarni":"SK","":"??","Unassigned":"UN"};
 const TC = {"PE Firm":"#2E7D44","Investment Bank":"#147A70","Platform":"#B87100","Dental Practice":"#5E3FB5"};
 const TT = {"PE Firm":"tg","Investment Bank":"tt","Platform":"ta","Dental Practice":"tp"};
 const STARS = (n)=>[1,2,3].map(i=>`<span style="color:${i<=n?"#B87100":"#D1D5DB"}"">★</span>`).join('');
@@ -522,15 +503,15 @@ let leads = [
   {id:"PE007",rtype:"PE Firm",name:"Alpine Investors",contact:"Tom Ulricson",title:"Principal",email:"tulricson@alpineinvestors.com",phone:"",website:"https://www.alpineinvestors.com",region:"West",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"PE/Buyout",sector:"PE Companies",service:"",portfolio:"",linkedin:"",owner:"Lucius Burch",gtm:2,stage:"Meeting Scheduled",desc:"San Francisco PE. PeopleFirst approach. Software, services, healthcare.",acqRegion:"West Coast",size:"51-200 employees",ndaSent:true,questionnaire:"Sent",gtmP1:"Healthcare services GTM",gtmP2:"SaaS portco growth",investorId:"PB-ALP-01",coords:[-122.42,37.77],
    activities:[{icon:"📅",bg:"#FFF4DC",ic:"#B87100",title:"Zoom call: May 16, 2:00 PM",sub:"Confirmed · LB"}],linked:[]},
 
-  {id:"PE008",rtype:"PE Firm",name:"Graham Healthcare Capital",contact:"Jim Ward",title:"Managing Director",email:"jward@southeastacquisition.com",phone:"+1 703-819-5819",website:"https://www.grahamhealthcarecapital.com/",region:"Northeast",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Healthcare PE",sector:"Healthcare",service:"Growth Enablement",portfolio:"Residential Healthcare Group, Allegheny Health, Mary Free Bed",linkedin:"https://www.linkedin.com/company/graham-healthcare-capital",owner:"Karan Gupta",gtm:3,stage:"Active Partner",desc:"Healthcare services investing exclusively. Majority recaps with management teams.",acqRegion:"Mid-Atlantic",size:"11-50 employees",ndaSent:true,questionnaire:"Completed",gtmP1:"Healthcare portco GTM acceleration",gtmP2:"Referral partner introductions",investorId:"PB-GHC-01",coords:[-77.03,38.89],
-   activities:[{icon:"🤝",bg:"#E8F5E9",ic:"#1B5E20",title:"Partnership agreement signed",sub:"Apr 30, 2026 · KG",note:"STOC providing GTM support to portfolio companies."},{icon:"📅",bg:"#FFF4DC",ic:"#B87100",title:"Intro meeting · 60 min",sub:"Apr 15, 2026 · KG"}],linked:["IB001","PL001"]},
+  {id:"PE008",rtype:"PE Firm",name:"Graham Healthcare Capital",contact:"Jim Ward",title:"Managing Director",email:"jward@southeastacquisition.com",phone:"+1 703-819-5819",website:"https://www.grahamhealthcarecapital.com/",region:"Northeast",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Healthcare PE",sector:"Healthcare",service:"Growth Enablement",portfolio:"Residential Healthcare Group, Allegheny Health, Mary Free Bed",linkedin:"https://www.linkedin.com/company/graham-healthcare-capital",owner:"Srushti Kulkarni",gtm:3,stage:"Active Partner",desc:"Healthcare services investing exclusively. Majority recaps with management teams.",acqRegion:"Mid-Atlantic",size:"11-50 employees",ndaSent:true,questionnaire:"Completed",gtmP1:"Healthcare portco GTM acceleration",gtmP2:"Referral partner introductions",investorId:"PB-GHC-01",coords:[-77.03,38.89],
+   activities:[{icon:"🤝",bg:"#E8F5E9",ic:"#1B5E20",title:"Partnership agreement signed",sub:"Apr 30, 2026 · SK",note:"STOC providing GTM support to portfolio companies."},{icon:"📅",bg:"#FFF4DC",ic:"#B87100",title:"Intro meeting · 60 min",sub:"Apr 15, 2026 · SK"}],linked:["IB001","PL001"]},
 
   {id:"PE009",rtype:"PE Firm",name:"Hidden Harbor Capital",contact:"Allison Goldman",title:"VP, Business Development",email:"agoldman@hh-cp.com",phone:"",website:"http://www.hh-cp.com",region:"South",aum:"1,900",inv6m:7,inv12m:11,inv2y:0,peType:"PE/Buyout",sector:"PE Companies",service:"Growth Enablement",portfolio:"Monster Transmission, KT-Grant",linkedin:"https://www.linkedin.com/company/hidden-harbor-capital-partners",owner:"",gtm:2,stage:"Engaged",desc:"Founder-led lower middle-market. Services, distribution, specialty manufacturing.",acqRegion:"South",size:"11-50 employees",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Distribution channel optimization",gtmP2:"",investorId:"PB-HH-01",coords:[-95.37,29.76],
    activities:[{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Reply received — positive",sub:"May 11, 2026",note:"Allison looping in her partner."},{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Outreach sent",sub:"May 9, 2026"}],linked:[]},
 
   // INVESTMENT BANKS
-  {id:"IB001",rtype:"Investment Bank",name:"Harris Williams",contact:"Sarah Chen",title:"Managing Director",email:"s.chen@harriswilliams.com",phone:"",website:"https://www.harriswilliams.com",region:"National",aum:"",inv6m:0,inv12m:14,inv2y:0,peType:"Upper Middle Market",sector:"Healthcare; Services; Tech",service:"M&A Advisory",portfolio:"",linkedin:"",owner:"Karan Gupta",gtm:3,stage:"Active Partner",desc:"Upper middle-market M&A advisor. Dominant healthcare practice. $50M–$500M EV range.",acqRegion:"National",size:"501-1000",ndaSent:true,questionnaire:"Completed",gtmP1:"Dental/DSO exclusive mandates",gtmP2:"Early looks on healthcare add-ons",investorId:"",coords:[-77.44,37.54],
-   activities:[{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Call · Sarah Chen · 25 min",sub:"Today, 8:45 AM · KG",note:"Sarah shared 2 new dental mandates. FL group, 18 locations. Move fast."},{icon:"🤝",bg:"#E8F5E9",ic:"#1B5E20",title:"Dinner meeting — HW team",sub:"Apr 28, 2026 · KG + AS"}],linked:["PE008","PL001"]},
+  {id:"IB001",rtype:"Investment Bank",name:"Harris Williams",contact:"Sarah Chen",title:"Managing Director",email:"s.chen@harriswilliams.com",phone:"",website:"https://www.harriswilliams.com",region:"National",aum:"",inv6m:0,inv12m:14,inv2y:0,peType:"Upper Middle Market",sector:"Healthcare; Services; Tech",service:"M&A Advisory",portfolio:"",linkedin:"",owner:"Srushti Kulkarni",gtm:3,stage:"Active Partner",desc:"Upper middle-market M&A advisor. Dominant healthcare practice. $50M–$500M EV range.",acqRegion:"National",size:"501-1000",ndaSent:true,questionnaire:"Completed",gtmP1:"Dental/DSO exclusive mandates",gtmP2:"Early looks on healthcare add-ons",investorId:"",coords:[-77.44,37.54],
+   activities:[{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Call · Sarah Chen · 25 min",sub:"Today, 8:45 AM · SK",note:"Sarah shared 2 new dental mandates. FL group, 18 locations. Move fast."},{icon:"🤝",bg:"#E8F5E9",ic:"#1B5E20",title:"Dinner meeting — HW team",sub:"Apr 28, 2026 · SK + AS"}],linked:["PE008","PL001"]},
 
   {id:"IB002",rtype:"Investment Bank",name:"Brown Gibbons Lang",contact:"David Park",title:"Director",email:"d.park@bglco.com",phone:"",website:"https://www.bglco.com",region:"Midwest",aum:"",inv6m:0,inv12m:7,inv2y:0,peType:"Middle Market",sector:"Healthcare; Business Services; Consumer",service:"M&A Advisory",portfolio:"",linkedin:"",owner:"Lucius Burch",gtm:2,stage:"Engaged",desc:"Midwest-focused middle market boutique. $20M–$200M EV. Strong dental practice.",acqRegion:"Midwest + Southeast",size:"51-200",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Midwest dental add-on mandates",gtmP2:"Platform acquisition sourcing",investorId:"",coords:[-81.69,41.50],
    activities:[{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Call · David Park · 15 min",sub:"3 days ago · LB"}],linked:["PE009","PL002"]},
@@ -542,8 +523,8 @@ let leads = [
    activities:[{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Initial outreach sent",sub:"May 10, 2026 · PE"}],linked:[]},
 
   // PLATFORMS
-  {id:"PL001",rtype:"Platform",name:"SunBridge Dental Group",contact:"Kyle Merritt",title:"CEO",email:"k.merritt@sunbridgedental.com",phone:"+1 813-555-0192",website:"https://sunbridgedental.com",region:"South",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"DSO / Dental Platform",sector:"Dental DSO",service:"Sourcing + Advisory",portfolio:"24 locations across FL, NC, SC",linkedin:"",owner:"Karan Gupta",gtm:3,stage:"Active Partner",desc:"PE-backed dental DSO. 24 locations across Southeast. Actively acquiring add-on practices.",acqRegion:"Southeast",size:"201-500",ndaSent:true,questionnaire:"Completed",gtmP1:"SE add-on acquisitions (FL/NC)",gtmP2:"Operating efficiency program",investorId:"",coords:[-82.46,27.95],
-   activities:[{icon:"⊕",bg:"#E8F5E9",ic:"#1B5E20",title:"3 add-on targets linked (FL batch)",sub:"Yesterday · KG"},{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Weekly pipeline review call",sub:"3 days ago · KG"}],linked:["PE008","IB001","DP001","DP002"]},
+  {id:"PL001",rtype:"Platform",name:"SunBridge Dental Group",contact:"Kyle Merritt",title:"CEO",email:"k.merritt@sunbridgedental.com",phone:"+1 813-555-0192",website:"https://sunbridgedental.com",region:"South",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"DSO / Dental Platform",sector:"Dental DSO",service:"Sourcing + Advisory",portfolio:"24 locations across FL, NC, SC",linkedin:"",owner:"Srushti Kulkarni",gtm:3,stage:"Active Partner",desc:"PE-backed dental DSO. 24 locations across Southeast. Actively acquiring add-on practices.",acqRegion:"Southeast",size:"201-500",ndaSent:true,questionnaire:"Completed",gtmP1:"SE add-on acquisitions (FL/NC)",gtmP2:"Operating efficiency program",investorId:"",coords:[-82.46,27.95],
+   activities:[{icon:"⊕",bg:"#E8F5E9",ic:"#1B5E20",title:"3 add-on targets linked (FL batch)",sub:"Yesterday · SK"},{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Weekly pipeline review call",sub:"3 days ago · SK"}],linked:["PE008","IB001","DP001","DP002"]},
 
   {id:"PL002",rtype:"Platform",name:"Prairie Dental Platform",contact:"Sandra Wu",title:"VP Operations",email:"swu@prairiedental.com",phone:"",website:"",region:"Midwest",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Dental Platform",sector:"Dental DSO",service:"Sourcing",portfolio:"8 locations in IL, OH",linkedin:"",owner:"Lucius Burch",gtm:2,stage:"Active Partner",desc:"Recently acquired Midwest dental platform. Active add-on search in IL and OH.",acqRegion:"Midwest",size:"51-200",ndaSent:true,questionnaire:"Sent",gtmP1:"IL/OH expansion pipeline",gtmP2:"Clinical ops standardization",investorId:"",coords:[-87.99,41.83],
    activities:[{icon:"⊕",bg:"#FFF4DC",ic:"#B87100",title:"Portco record created post-close",sub:"2 weeks ago · LB"}],linked:["IB002","DP003"]},
@@ -552,17 +533,17 @@ let leads = [
    activities:[{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Intro meeting request sent",sub:"May 9, 2026 · PE"}],linked:["PE007"]},
 
   // DENTAL PRACTICES
-  {id:"DP001",rtype:"Dental Practice",name:"Advanced Dental Care of Miami",contact:"Dr. Elena Rivera",title:"Owner / DDS",email:"erivera@advanceddental-miami.com",phone:"(305) 555-0142",website:"",region:"South",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Single Practice",sector:"General Dentistry",service:"M&A Target",portfolio:"",linkedin:"",owner:"Karan Gupta",gtm:2,stage:"Proposal",desc:"Miami-area general dentistry. 3 locations, 4 dentists. Owner Dr. Rivera (58) exploring transition.",acqRegion:"Southeast",size:"11-50",ndaSent:true,questionnaire:"Completed",gtmP1:"Practice sale to SunBridge",gtmP2:"",investorId:"",coords:[-80.19,25.77],
-   activities:[{icon:"📄",bg:"#EEE9FF",ic:"#5E3FB5",title:"LOI submitted",sub:"Yesterday · KG",note:"LOI sent for SunBridge acquisition. Awaiting countersignature."},{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Call · 34 min · Dr. Rivera",sub:"3 days ago · KG",note:"Confirmed running a process. 2 other groups in conversation."}],linked:["PL001"]},
+  {id:"DP001",rtype:"Dental Practice",name:"Advanced Dental Care of Miami",contact:"Dr. Elena Rivera",title:"Owner / DDS",email:"erivera@advanceddental-miami.com",phone:"(305) 555-0142",website:"",region:"South",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Single Practice",sector:"General Dentistry",service:"M&A Target",portfolio:"",linkedin:"",owner:"Srushti Kulkarni",gtm:2,stage:"Proposal",desc:"Miami-area general dentistry. 3 locations, 4 dentists. Owner Dr. Rivera (58) exploring transition.",acqRegion:"Southeast",size:"11-50",ndaSent:true,questionnaire:"Completed",gtmP1:"Practice sale to SunBridge",gtmP2:"",investorId:"",coords:[-80.19,25.77],
+   activities:[{icon:"📄",bg:"#EEE9FF",ic:"#5E3FB5",title:"LOI submitted",sub:"Yesterday · SK",note:"LOI sent for SunBridge acquisition. Awaiting countersignature."},{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Call · 34 min · Dr. Rivera",sub:"3 days ago · SK",note:"Confirmed running a process. 2 other groups in conversation."}],linked:["PL001"]},
 
-  {id:"DP002",rtype:"Dental Practice",name:"Carolina Oral Health Network",contact:"Dr. James Fitzpatrick",title:"Managing Partner",email:"j.fitzpatrick@carolinaoral.com",phone:"(704) 555-0087",website:"",region:"South",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Group Practice",sector:"Oral Surgery; General",service:"M&A Target",portfolio:"",linkedin:"",owner:"Karan Gupta",gtm:2,stage:"Engaged",desc:"Charlotte-area dental network. 12 locations across NC/SC. Multi-specialty group.",acqRegion:"Southeast",size:"51-200",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Platform add-on for SunBridge",gtmP2:"",investorId:"",coords:[-80.84,35.23],
-   activities:[{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Intro call · 20 min",sub:"May 10, 2026 · KG",note:"Dr. Fitzpatrick open to exploring. Wants to understand structure."},{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Intro email sent",sub:"May 8, 2026"}],linked:["PL001"]},
+  {id:"DP002",rtype:"Dental Practice",name:"Carolina Oral Health Network",contact:"Dr. James Fitzpatrick",title:"Managing Partner",email:"j.fitzpatrick@carolinaoral.com",phone:"(704) 555-0087",website:"",region:"South",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Group Practice",sector:"Oral Surgery; General",service:"M&A Target",portfolio:"",linkedin:"",owner:"Srushti Kulkarni",gtm:2,stage:"Engaged",desc:"Charlotte-area dental network. 12 locations across NC/SC. Multi-specialty group.",acqRegion:"Southeast",size:"51-200",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Platform add-on for SunBridge",gtmP2:"",investorId:"",coords:[-80.84,35.23],
+   activities:[{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Intro call · 20 min",sub:"May 10, 2026 · SK",note:"Dr. Fitzpatrick open to exploring. Wants to understand structure."},{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Intro email sent",sub:"May 8, 2026"}],linked:["PL001"]},
 
   {id:"DP003",rtype:"Dental Practice",name:"Prairie Smiles Associates",contact:"Dr. Michael Patel",title:"Owner",email:"mpatel@prairiesmiles.com",phone:"(312) 555-0055",website:"",region:"Midwest",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Single Practice",sector:"General Dentistry",service:"M&A Target",portfolio:"",linkedin:"",owner:"Lucius Burch",gtm:1,stage:"Outreach Sent",desc:"Chicago suburban general dentistry. 2 locations. Owner approaching retirement.",acqRegion:"Midwest",size:"1-10",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Add-on for Prairie Dental",gtmP2:"",investorId:"",coords:[-87.88,42.02],
    activities:[{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Initial outreach via email",sub:"May 8, 2026 · LB"}],linked:["PL002"]},
 
   // DEMO RECORDS
-  {id:"DEMO001",rtype:"PE Firm",name:"[DEMO] Apex DSO Holdings",contact:"Sample Contact",title:"Managing Director",email:"demo@example.com",phone:"+1 555-0001",website:"https://example.com",region:"South",aum:"3,200",inv6m:5,inv12m:12,inv2y:22,peType:"PE/Buyout",sector:"Dental DSO; Healthcare",service:"Growth Enablement",portfolio:"SunBridge Dental, TrueSmile Group, Lakeside DSO",linkedin:"",owner:"Karan Gupta",gtm:3,stage:"Active Partner",desc:"[DEMO RECORD] Fully-linked PE firm example. Connected to a Platform, Investment Bank, and Dental Practice. Demonstrates multi-level record linking across all 4 record types.",acqRegion:"Southeast",size:"11-50",ndaSent:true,questionnaire:"Completed",gtmP1:"Dental roll-up Southeast",gtmP2:"Co-invest on mid-market deals",investorId:"DEMO-001",coords:[-84.39,33.75],
+  {id:"DEMO001",rtype:"PE Firm",name:"[DEMO] Apex DSO Holdings",contact:"Sample Contact",title:"Managing Director",email:"demo@example.com",phone:"+1 555-0001",website:"https://example.com",region:"South",aum:"3,200",inv6m:5,inv12m:12,inv2y:22,peType:"PE/Buyout",sector:"Dental DSO; Healthcare",service:"Growth Enablement",portfolio:"SunBridge Dental, TrueSmile Group, Lakeside DSO",linkedin:"",owner:"Srushti Kulkarni",gtm:3,stage:"Active Partner",desc:"[DEMO RECORD] Fully-linked PE firm example. Connected to a Platform, Investment Bank, and Dental Practice. Demonstrates multi-level record linking across all 4 record types.",acqRegion:"Southeast",size:"11-50",ndaSent:true,questionnaire:"Completed",gtmP1:"Dental roll-up Southeast",gtmP2:"Co-invest on mid-market deals",investorId:"DEMO-001",coords:[-84.39,33.75],
    activities:[{icon:"🔗",bg:"#FFF3E0",ic:"#D84315",title:"[DEMO] 4-way record linking example",sub:"Shows PE → Platform → Practice → IB flow",note:"This record is linked to SunBridge Dental (Platform), Harris Williams (IB), and Carolina Oral Health (Practice). Demonstrates cross-entity navigation."}],linked:["PL001","IB001","DP002"]},
 
   {id:"DEMO002",rtype:"Platform",name:"[DEMO] TechCare Analytics",contact:"Sample CEO",title:"CEO",email:"demo2@example.com",phone:"",website:"",region:"South",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"SaaS Portco",sector:"Health Tech; SaaS",service:"Operating Advisory",portfolio:"",linkedin:"",owner:"Peyton Evans",gtm:2,stage:"Proposal",desc:"[DEMO RECORD] SaaS/Health Tech portco example. Shows how a technology platform company would appear. Linked to parent PE firm and advising IB. Replace this with real data.",acqRegion:"National",size:"11-50",ndaSent:false,questionnaire:"Not Sent",gtmP1:"SaaS go-to-market optimization",gtmP2:"Channel partnership strategy",investorId:"",coords:[-97.74,30.27],
@@ -589,31 +570,31 @@ let customFields = [
 // EMAIL DATA
 // ════════════════════════════════════════════════════════
 const EMAILS = [
-  {id:"E001",folder:"inbox",unread:true,from:"Sarah Chen",email:"s.chen@harriswilliams.com",to:"karan@stocadvisory.com",subj:"Re: STOC × Harris Williams — New FL Mandate",ts:"Today 8:42 AM",lead:"IB001",thread:[
-    {dir:"in",from:"Sarah Chen",ts:"Today 8:42 AM",body:"Hi Karan,\n\nFollowing up on our call — attaching teasers for the FL dental group (18 locations, ~$4.2M EBITDA). They're running a tight process, 3-week exclusivity window.\n\nCan your team move quickly on this one? Let me know by EOD.\n\nBest,\nSarah Chen\nManaging Director, Harris Williams"},
-    {dir:"out",from:"Karan Gupta",ts:"Yesterday 4:15 PM",body:"Hi Sarah,\n\nThank you for the early look. We've been targeting FL groups in that size range for SunBridge — this looks very promising.\n\nExecuting NDA now and will follow up with an initial call request.\n\nBest,\nKaran\nSTOC Advisory"},
+  {id:"E001",folder:"inbox",unread:true,from:"Sarah Chen",email:"s.chen@harriswilliams.com",to:"srushti@stocadvisory.com",subj:"Re: STOC × Harris Williams — New FL Mandate",ts:"Today 8:42 AM",lead:"IB001",thread:[
+    {dir:"in",from:"Sarah Chen",ts:"Today 8:42 AM",body:"Hi Srushti,\n\nFollowing up on our call — attaching teasers for the FL dental group (18 locations, ~$4.2M EBITDA). They're running a tight process, 3-week exclusivity window.\n\nCan your team move quickly on this one? Let me know by EOD.\n\nBest,\nSarah Chen\nManaging Director, Harris Williams"},
+    {dir:"out",from:"Srushti Kulkarni",ts:"Yesterday 4:15 PM",body:"Hi Sarah,\n\nThank you for the early look. We've been targeting FL groups in that size range for SunBridge — this looks very promising.\n\nExecuting NDA now and will follow up with an initial call request.\n\nBest,\nSrushti\nSTOC Advisory"},
   ]},
-  {id:"E002",folder:"inbox",unread:true,from:"Tim Addison",email:"taddison@o2investment.com",to:"karan@stocadvisory.com",subj:"RE: STOC Advisory — GTM Services for PE Portfolios",ts:"Yesterday 11:22 AM",lead:"PE002",thread:[
+  {id:"E002",folder:"inbox",unread:true,from:"Tim Addison",email:"taddison@o2investment.com",to:"srushti@stocadvisory.com",subj:"RE: STOC Advisory — GTM Services for PE Portfolios",ts:"Yesterday 11:22 AM",lead:"PE002",thread:[
     {dir:"in",from:"Tim Addison",ts:"Yesterday 11:22 AM",body:"Hi,\n\nThanks for reaching out. This looks interesting — we've been thinking about GTM improvements across a few of our portfolio companies.\n\nCould you send over some case studies specific to B2B services firms?\n\nTim Addison\nO2 Investment Partners"},
-    {dir:"out",from:"Lucius Burch",ts:"May 9 8:00 AM",body:"Hi Tim,\n\nI'm Lucius, I work alongside Karan on our PE relationship team.\n\nWe'd love to share some examples specific to your sectors — would you have 20 minutes for a brief call this week?\n\nBest,\nLucius Burch\nSTOC Advisory"},
+    {dir:"out",from:"Lucius Burch",ts:"May 9 8:00 AM",body:"Hi Tim,\n\nI'm Lucius, I work alongside Srushti on our PE relationship team.\n\nWe'd love to share some examples specific to your sectors — would you have 20 minutes for a brief call this week?\n\nBest,\nLucius Burch\nSTOC Advisory"},
   ]},
   {id:"E003",folder:"inbox",unread:false,from:"Jessica Ginsberg",email:"jessica@lfmcapital.com",to:"andrew@stocadvisory.com",subj:"Proposal Review — STOC Engagement",ts:"May 11 3:44 PM",lead:"PE004",thread:[
     {dir:"in",from:"Jessica Ginsberg",ts:"May 11 3:44 PM",body:"Andrew,\n\nThank you for the proposal. A few questions:\n\n1. Typical engagement timeline?\n2. What success metrics do you track?\n3. Industrial manufacturing portcos specifically?\n\nJessica\nLFM Capital"},
     {dir:"out",from:"Andrew Swihart",ts:"May 11 2:00 PM",body:"Hi Jessica,\n\nGreat meeting — I've prepared the formal engagement proposal as discussed.\n\nKey highlights:\n• Customized GTM strategy for LFM portcos\n• Industrial sector expertise\n• Flexible engagement model\n\nBest,\nAndrew Swihart\nSTOC Advisory"},
   ]},
-  {id:"E004",folder:"sent",unread:false,from:"Karan Gupta",email:"karan@stocadvisory.com",to:"ibeck@excellere.com",subj:"NDA — STOC Advisory × Excellere Partners",ts:"May 6 4:00 PM",lead:"PE003",thread:[
-    {dir:"out",from:"Karan Gupta",ts:"May 6 4:00 PM",body:"Hi Ian,\n\nAs discussed, please find attached our standard NDA for your review.\n\nOnce signed, I'll share our detailed capabilities deck and healthcare case studies.\n\nLooking forward to our call on the 15th.\n\nBest,\nKaran Gupta\nSTOC Advisory"},
+  {id:"E004",folder:"sent",unread:false,from:"Srushti Kulkarni",email:"srushti@stocadvisory.com",to:"ibeck@excellere.com",subj:"NDA — STOC Advisory × Excellere Partners",ts:"May 6 4:00 PM",lead:"PE003",thread:[
+    {dir:"out",from:"Srushti Kulkarni",ts:"May 6 4:00 PM",body:"Hi Ian,\n\nAs discussed, please find attached our standard NDA for your review.\n\nOnce signed, I'll share our detailed capabilities deck and healthcare case studies.\n\nLooking forward to our call on the 15th.\n\nBest,\nSrushti Kulkarni\nSTOC Advisory"},
   ]},
-  {id:"E005",folder:"drafts",unread:false,from:"Karan Gupta",email:"karan@stocadvisory.com",to:"agoldman@hh-cp.com",subj:"STOC × Hidden Harbor — Intro Call",ts:"Draft · May 11",lead:"PE009",thread:[
-    {dir:"draft",from:"Karan Gupta",ts:"Draft",body:"Hi Allison,\n\nThank you for your note — we're excited to connect with you and your partner.\n\n[ADD: Proposed meeting times]\n[ADD: Attach case studies]\n\nBest,\nKaran"},
+  {id:"E005",folder:"drafts",unread:false,from:"Srushti Kulkarni",email:"srushti@stocadvisory.com",to:"agoldman@hh-cp.com",subj:"STOC × Hidden Harbor — Intro Call",ts:"Draft · May 11",lead:"PE009",thread:[
+    {dir:"draft",from:"Srushti Kulkarni",ts:"Draft",body:"Hi Allison,\n\nThank you for your note — we're excited to connect with you and your partner.\n\n[ADD: Proposed meeting times]\n[ADD: Attach case studies]\n\nBest,\nSrushti"},
   ]},
 ];
 
 const TEMPLATES = {
-  intro:{subj:"STOC Advisory — Growth Partnership Opportunity",body:"Hi {first},\n\nHope this finds you well. I'm reaching out from STOC Advisory — we specialize in Growth Enablement Services for lower middle-market PE firms and their portfolio companies.\n\nWould you have 20 minutes this week for a brief intro call?\n\nBest,\nKaran Gupta\nSTOC Advisory"},
-  followup:{subj:"Following Up — STOC Advisory",body:"Hi {first},\n\nJust following up on my earlier note. Worth a quick 15-minute call?\n\nBest,\nKaran"},
-  nda:{subj:"NDA — STOC Advisory",body:"Hi {first},\n\nAs discussed, please find attached our standard NDA for your review.\n\nBest,\nKaran Gupta\nSTOC Advisory"},
-  proposal:{subj:"STOC Advisory — Engagement Proposal",body:"Hi {first},\n\nThank you for the productive conversation. Attached is our formal engagement proposal.\n\nBest,\nKaran Gupta\nSTOC Advisory"},
+  intro:{subj:"STOC Advisory — Growth Partnership Opportunity",body:"Hi {first},\n\nHope this finds you well. I'm reaching out from STOC Advisory — we specialize in Growth Enablement Services for lower middle-market PE firms and their portfolio companies.\n\nWould you have 20 minutes this week for a brief intro call?\n\nBest,\nSrushti Kulkarni\nSTOC Advisory"},
+  followup:{subj:"Following Up — STOC Advisory",body:"Hi {first},\n\nJust following up on my earlier note. Worth a quick 15-minute call?\n\nBest,\nSrushti"},
+  nda:{subj:"NDA — STOC Advisory",body:"Hi {first},\n\nAs discussed, please find attached our standard NDA for your review.\n\nBest,\nSrushti Kulkarni\nSTOC Advisory"},
+  proposal:{subj:"STOC Advisory — Engagement Proposal",body:"Hi {first},\n\nThank you for the productive conversation. Attached is our formal engagement proposal.\n\nBest,\nSrushti Kulkarni\nSTOC Advisory"},
 };
 
 // CALENDAR EVENTS
@@ -802,7 +783,7 @@ function renderEmailView(){
     <div class="email-toolbar">
       <button class="btn btn-pri" onclick="openEmailCompose(currentLead)">✏ Compose</button>
       <button class="btn">⟳ Sync</button>
-      <div style="margin-left:auto;font-size:11.5px;color:var(--text3);font-family:var(--mono)">karan@stocadvisory.com · Last sync: just now</div>
+      <div style="margin-left:auto;font-size:11.5px;color:var(--text3);font-family:var(--mono)">srushti@stocadvisory.com · Last sync: just now</div>
     </div>
     <div class="email-body">
       <div class="email-sb">
@@ -902,7 +883,7 @@ function sendReply(eid){
   const body=document.getElementById("rep-body").value;
   if(!body.trim()){toast("Please write a reply");return}
   const em=EMAILS.find(e=>e.id===eid);
-  if(em) em.thread.unshift({dir:"out",from:"Karan Gupta",ts:"Just now",body});
+  if(em) em.thread.unshift({dir:"out",from:"Srushti Kulkarni",ts:"Just now",body});
   toast("Reply sent to "+em.email);
   openEmailThread(eid);
 }
@@ -1035,8 +1016,6 @@ function updateMapMarkers(){
 // ════════════════════════════════════════════════════════
 function setView(v,el){
   currentView=v;
-  document.querySelectorAll(".tnav").forEach(t=>t.classList.remove("on"));
-  if(el) el.classList.add("on");
   document.getElementById("pipe-wrap").style.display=v==="pipeline"?"flex":"none";
   document.getElementById("list-wrap").style.display=v==="list"?"block":"none";
   document.getElementById("email-wrap").style.display=v==="email"?"flex":"none";
@@ -1052,8 +1031,7 @@ function setView(v,el){
 function sbNav(el,view){
   document.querySelectorAll(".sbi[id^='sbv-']").forEach(i=>i.classList.remove("on"));
   el.classList.add("on");
-  const m={"pipeline":"tn-pipeline","list":"tn-list","email":"tn-email","cal":"tn-cal","map":"tn-map"};
-  setView(view,document.getElementById(m[view]));
+  setView(view);
 }
 
 // ════════════════════════════════════════════════════════
@@ -1078,11 +1056,13 @@ function selectLead(id){
     ${demo?`<span class="tag tdemo">DEMO</span>`:""}
   `;
   document.getElementById("dp").classList.add("open");
+  document.getElementById("dp-backdrop").classList.add("show");
   renderDTab(currentDTab);
 }
 
 function closeDetail(){
   document.getElementById("dp").classList.remove("open");
+  document.getElementById("dp-backdrop").classList.remove("show");
   currentLead=null;renderPipeline();renderList();
 }
 
@@ -1174,7 +1154,7 @@ function renderActivity(l){
 function addNote(){
   const txt=document.getElementById("note-area").value.trim();
   if(!txt||!currentLead)return;
-  currentLead.activities.unshift({icon:"📝",bg:"#F3F4F6",ic:"var(--text3)",title:"Note added",sub:"Just now · KG",note:txt});
+  currentLead.activities.unshift({icon:"📝",bg:"#F3F4F6",ic:"var(--text3)",title:"Note added",sub:"Just now · SK",note:txt});
   toast("Note saved");renderDTab("activity");
 }
 
@@ -1322,7 +1302,7 @@ function selOC(el,v){selOutcome=v;document.querySelectorAll(".ocbtn").forEach(b=
 function saveCall(){
   if(!currentLead){closeModal();return}
   const notes=document.getElementById("call-notes").value;
-  currentLead.activities.unshift({icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:`Call · ${fmtTime(callSec)} · ${selOutcome||"Connected"}`,sub:"Just now · KG",note:notes||"Call completed."});
+  currentLead.activities.unshift({icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:`Call · ${fmtTime(callSec)} · ${selOutcome||"Connected"}`,sub:"Just now · SK",note:notes||"Call completed."});
   closeModal();if(document.getElementById("dp").classList.contains("open"))renderDTab("activity");
   toast("Call logged: "+(selOutcome||"Connected"));
 }
@@ -1337,7 +1317,7 @@ function openEmailCompose(lead){
     <div class="mb">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><label class="mlab">To</label><input class="minp" id="ec-to" value="${to}" placeholder="recipient@firm.com"></div>
-        <div><label class="mlab">From</label><select class="minp"><option>karan@stocadvisory.com</option><option>team@stocadvisory.com</option></select></div>
+        <div><label class="mlab">From</label><select class="minp"><option>srushti@stocadvisory.com</option><option>team@stocadvisory.com</option></select></div>
       </div>
       <div><label class="mlab">Template</label>
         <select class="minp" onchange="fillEC(this.value,'${first}','${firm.replace(/'/g,"\\'")}')">
@@ -1371,8 +1351,8 @@ function sendEmailCompose(leadId){
   if(!to||!subj){toast("Fill in To and Subject");return}
   if(document.getElementById("ec-log").checked&&leadId){
     const l=leads.find(r=>r.id===leadId);
-    if(l)l.activities.unshift({icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Email sent: "+subj,sub:"Just now · KG"});
-    EMAILS.unshift({id:"E_"+Date.now(),folder:"sent",unread:false,from:"Karan Gupta",email:to,to,subj,ts:"Just now",lead:leadId,thread:[{dir:"out",from:"Karan Gupta",ts:"Just now",body}]});
+    if(l)l.activities.unshift({icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Email sent: "+subj,sub:"Just now · SK"});
+    EMAILS.unshift({id:"E_"+Date.now(),folder:"sent",unread:false,from:"Srushti Kulkarni",email:to,to,subj,ts:"Just now",lead:leadId,thread:[{dir:"out",from:"Srushti Kulkarni",ts:"Just now",body}]});
   }
   closeModal();if(document.getElementById("dp").classList.contains("open"))renderDTab("activity");
   toast("Email sent to "+to);
@@ -1383,7 +1363,7 @@ function sendEmailCompose(leadId){
 // ════════════════════════════════════════════════════════
 function openSmsModal(lead){
   const name=lead?lead.name.replace("[DEMO] ",""):"Unknown";const id=lead?lead.id:"tmp";const first=lead?lead.contact.split(" ")[0]:"there";
-  if(!smsHist[id])smsHist[id]=[{dir:"out",text:"Hi "+first+" — it's Karan from STOC Advisory. Just following up on my email. Is this a good number?",ts:"May 7, 2:00 PM"}];
+  if(!smsHist[id])smsHist[id]=[{dir:"out",text:"Hi "+first+" — it's Srushti from STOC Advisory. Just following up on my email. Is this a good number?",ts:"May 7, 2:00 PM"}];
   const bubs=smsHist[id].map(m=>`<div class="sms-bub sms-${m.dir}">${m.text}<span class="sms-ts">${m.ts}</span></div>`).join("");
   showModal(`<div class="modal" onclick="e=>e.stopPropagation()">
     <div class="mh"><div><div class="mt">💬 SMS</div><div class="ms">${lead?lead.contact:""} · ${name}</div></div><button class="dp-close" onclick="closeModal()" style="background:var(--surf3);color:var(--text3)">✕</button></div>
@@ -1405,7 +1385,7 @@ function sendSms(lid,inp){
   smsHist[lid].push({dir:"out",text:txt,ts:"Just now"});inp.value="";
   const feed=document.getElementById("sms-feed");
   if(feed){const b=document.createElement("div");b.className="sms-bub sms-out";b.innerHTML=txt+`<span class="sms-ts">Just now</span>`;feed.appendChild(b);feed.scrollTop=feed.scrollHeight}
-  if(currentLead&&currentLead.id===lid)currentLead.activities.unshift({icon:"💬",bg:"#FFF4DC",ic:"#B87100",title:"SMS sent",sub:"Just now · KG",note:txt});
+  if(currentLead&&currentLead.id===lid)currentLead.activities.unshift({icon:"💬",bg:"#FFF4DC",ic:"#B87100",title:"SMS sent",sub:"Just now · SK",note:txt});
   toast("SMS sent");
 }
 
@@ -1448,7 +1428,7 @@ function openNewRecordModal(){
         <div><label class="mlab">Region</label><select class="minp" id="nl-r"><option>Northeast</option><option>South</option><option>Midwest</option><option>West</option><option>National</option></select></div>
         <div><label class="mlab">Stage</label><select class="minp" id="nl-s">${STAGES.map(s=>`<option>${s}</option>`).join("")}</select></div>
         <div><label class="mlab">AUM ($M)</label><input class="minp" id="nl-a" placeholder="500"></div>
-        <div><label class="mlab">Owner</label><select class="minp" id="nl-o"><option>Peyton Evans</option><option>Lucius Burch</option><option>Andrew Swihart</option><option>Karan Gupta</option></select></div>
+        <div><label class="mlab">Owner</label><select class="minp" id="nl-o"><option>Peyton Evans</option><option>Lucius Burch</option><option>Andrew Swihart</option><option>Srushti Kulkarni</option></select></div>
       </div>
       <div><label class="mlab">Sector</label><input class="minp" id="nl-sec" placeholder="PE Companies, Healthcare, etc."></div>
       <div><label class="mlab">Description</label><textarea class="mtxt" id="nl-d" style="min-height:60px" placeholder="Background notes..."></textarea></div>
@@ -1460,7 +1440,7 @@ function openNewRecordModal(){
 function saveNewRecord(){
   const name=document.getElementById("nl-n").value.trim();const contact=document.getElementById("nl-c").value.trim();
   if(!name||!contact){toast("Name and contact are required");return}
-  const r={id:"REC_"+Math.random().toString(36).slice(2,8),rtype:document.getElementById("nl-t").value,name,contact,title:document.getElementById("nl-ti").value,email:document.getElementById("nl-e").value,phone:document.getElementById("nl-p").value,website:"",region:document.getElementById("nl-r").value,aum:document.getElementById("nl-a").value,inv6m:0,inv12m:0,inv2y:0,peType:"PE/Buyout",sector:document.getElementById("nl-sec").value,service:"",portfolio:"",linkedin:"",owner:document.getElementById("nl-o").value,gtm:1,stage:document.getElementById("nl-s").value,desc:document.getElementById("nl-d").value,acqRegion:"",size:"",ndaSent:false,questionnaire:"Not Sent",gtmP1:"",gtmP2:"",investorId:"",coords:null,activities:[{icon:"⊕",bg:"#F3F4F6",ic:"#9CA3AF",title:"Record created manually",sub:"Just now · KG"}],linked:[]};
+  const r={id:"REC_"+Math.random().toString(36).slice(2,8),rtype:document.getElementById("nl-t").value,name,contact,title:document.getElementById("nl-ti").value,email:document.getElementById("nl-e").value,phone:document.getElementById("nl-p").value,website:"",region:document.getElementById("nl-r").value,aum:document.getElementById("nl-a").value,inv6m:0,inv12m:0,inv2y:0,peType:"PE/Buyout",sector:document.getElementById("nl-sec").value,service:"",portfolio:"",linkedin:"",owner:document.getElementById("nl-o").value,gtm:1,stage:document.getElementById("nl-s").value,desc:document.getElementById("nl-d").value,acqRegion:"",size:"",ndaSent:false,questionnaire:"Not Sent",gtmP1:"",gtmP2:"",investorId:"",coords:null,activities:[{icon:"⊕",bg:"#F3F4F6",ic:"#9CA3AF",title:"Record created manually",sub:"Just now · SK"}],linked:[]};
   leads.unshift(r);closeModal();applyFilters();toast("Record created: "+name);
 }
 
