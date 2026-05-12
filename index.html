@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>STOC Advisory — Relationship CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#17244E;--navy2:#1F2E60;
+  --green:#2E7D44;--green2:#3A9152;--green-l:#EBF6ED;
+  --purple:#5E3FB5;--purple-l:#EEE9FF;
+  --blue:#2E5BE0;--blue-l:#EBF0FF;
+  --teal:#147A70;--teal-l:#E5F5F3;
+  --amber:#B87100;--amber-l:#FFF4DC;
+  --coral:#C03030;--coral-l:#FFECEC;
+  --border:#E5E7EB;--border2:#D1D5DB;
+  --bg:#F2F4FA;--surface:#fff;--surf2:#F9FAFB;--surf3:#F0F2F9;
+  --text:#111827;--text2:#374151;--text3:#6B7280;--text4:#9CA3AF;
+  --font:'Poppins',sans-serif;--mono:'DM Mono',monospace;
+  --r:6px;--r2:10px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.05);
+  --sh2:0 4px 14px rgba(0,0,0,.10);
+  --sh3:0 10px 32px rgba(0,0,0,.14);
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:13px;color:var(--text)}
+#app{display:flex;height:100vh;overflow:hidden}
+
+/* ──────────────── SIDEBAR ──────────────── */
+#sb{width:196px;min-width:196px;background:var(--navy);display:flex;flex-direction:column;overflow:hidden;box-shadow:2px 0 12px rgba(0,0,0,.2);z-index:10}
+.sb-top{padding:13px 12px 10px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:9px;min-height:52px}
+/* LOGO MARK */
+.logo-box{width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.logo-box img{width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1)}
+.logo-s-text{font-size:16px;font-weight:800;color:#fff;letter-spacing:-1px}
+.logo-wordmark{display:flex;flex-direction:column;gap:0}
+.logo-name{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1}
+.logo-tag{font-size:8px;font-weight:400;color:rgba(255,255,255,.38);letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
+
+.sb-nav{padding:10px 6px;flex:1;overflow-y:auto}
+.sb-section-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:8px 8px 3px}
+.sbi{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.5);transition:all .13s;margin-bottom:1px;font-size:12.5px;font-weight:400}
+.sbi:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.sbi.on{background:rgba(255,255,255,.12);color:#fff;font-weight:500}
+.sbi-ic{font-size:14px;width:17px;text-align:center;flex-shrink:0}
+.sbi-ct{margin-left:auto;font-size:9.5px;font-family:var(--mono);background:rgba(255,255,255,.1);color:rgba(255,255,255,.4);padding:1px 6px;border-radius:20px}
+.sbi.on .sbi-ct{background:var(--blue);color:#fff}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sb-foot{padding:10px 12px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:8px}
+.sb-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.sb-uname{font-size:11.5px;font-weight:500;color:#fff}
+.sb-urole{font-size:9.5px;color:rgba(255,255,255,.35)}
+
+/* ──────────────── MAIN ──────────────── */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* TOPBAR */
+#topbar{height:52px;min-height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px;box-shadow:var(--sh);z-index:5}
+.tb-logo-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.tb-logo-box{width:28px;height:28px;border-radius:6px;background:var(--navy);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.tb-logo-box img{width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1)}
+.tb-logo-s{font-size:14px;font-weight:800;color:#fff}
+.tb-name{font-size:14px;font-weight:700;color:var(--navy)}
+.tb-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
+.tb-badge{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.badge-active{background:#E8F5E9;color:#2E7D32}.badge-admin{background:var(--blue-l);color:var(--blue)}
+.tb-right{margin-left:auto;display:flex;gap:7px;align-items:center}
+.btn{padding:6px 13px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-family:var(--font);transition:all .13s;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{background:var(--surf2)}
+.btn-pri{background:var(--navy);border-color:var(--navy);color:#fff}
+.btn-pri:hover{background:var(--navy2)}
+.btn-gr{background:var(--green);border-color:var(--green);color:#fff}
+.btn-gr:hover{background:var(--green2)}
+
+/* TAB NAV */
+#tabnav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 16px;gap:2px;overflow-x:auto;flex-shrink:0}
+.tnav{display:flex;align-items:center;gap:5px;padding:10px 13px;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s;white-space:nowrap}
+.tnav:hover{color:var(--text2)}.tnav.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:600}
+.tnav-ic{font-size:13px}
+
+/* FILTER BAR — DROPDOWNS */
+#filterbar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.fsearch{display:flex;align-items:center;gap:7px;background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);padding:6px 11px;font-size:12px;font-family:var(--font);color:var(--text3);transition:border .13s}
+.fsearch:focus-within{border-color:#AFC5F5}
+.fsearch input{background:none;border:none;outline:none;font-size:12px;font-family:var(--font);color:var(--text);width:180px}
+.fsel{padding:6px 10px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface);font-size:12px;font-family:var(--font);color:var(--text2);cursor:pointer;outline:none;transition:border .13s;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239CA3AF' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:26px}
+.fsel:focus{border-color:#AFC5F5}
+.f-sep{width:1px;height:20px;background:var(--border)}
+.fbadge{font-size:11px;font-family:var(--mono);color:var(--text3);white-space:nowrap}
+.f-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+
+/* CONTENT */
+#content{flex:1;display:flex;overflow:hidden}
+
+/* STATS */
+.stats-row{background:var(--surface);border-bottom:1px solid var(--border);display:flex;flex-shrink:0;overflow-x:auto}
+.sc{padding:9px 18px;border-right:1px solid var(--border);flex-shrink:0;min-width:90px}
+.sv{font-size:20px;font-weight:700;letter-spacing:-.5px;line-height:1}
+.sl{font-size:10px;color:var(--text3);margin-top:1px}
+.sd{font-size:9.5px;font-family:var(--mono);margin-top:2px}
+.up{color:var(--green)}.dn{color:var(--coral)}.ne{color:var(--text4)}
+
+/* ──────────────── PIPELINE ──────────────── */
+#pipe-wrap{flex:1;overflow-x:auto;overflow-y:hidden;padding:14px 14px;display:flex;gap:10px;align-items:flex-start}
+.pcol{min-width:216px;max-width:216px;display:flex;flex-direction:column;gap:6px}
+.pcol-h{padding:7px 11px;border-radius:var(--r);display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--sh)}
+.pcol-name{font-size:11.5px;font-weight:600;flex:1}
+.pcol-ct{font-size:10px;font-family:var(--mono);padding:1px 7px;border-radius:20px}
+.pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:11px 12px;cursor:pointer;transition:all .14s;box-shadow:var(--sh)}
+.pcard:hover{border-color:#AFC5F5;box-shadow:var(--sh2);transform:translateY(-1px)}
+.pcard.sel{border-color:var(--blue);box-shadow:0 0 0 2px rgba(46,91,224,.1)}
+.pc-rtype{font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.pc-name{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:2px;line-height:1.3}
+.pc-co{font-size:11px;color:var(--text3);margin-bottom:5px}
+.pc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px}
+.tag{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;font-size:10.5px;font-weight:500;white-space:nowrap}
+.tg{background:var(--green-l);color:var(--green)}.tb{background:var(--blue-l);color:var(--blue)}.ta{background:var(--amber-l);color:var(--amber)}.tt{background:var(--teal-l);color:var(--teal)}.tp{background:var(--purple-l);color:var(--purple)}.tc{background:var(--coral-l);color:var(--coral)}.tx{background:var(--surf3);color:var(--text3)}.tn{background:#EEF0FA;color:var(--navy)}
+.tdemo{background:#FFF3E0;color:#D84315;font-style:italic}
+.pc-aum{font-size:10.5px;font-family:var(--mono);color:var(--green);font-weight:500;margin-top:3px}
+.pc-foot{display:flex;align-items:center;gap:6px;margin-top:7px;padding-top:6px;border-top:1px solid var(--border)}
+.av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:700;flex-shrink:0;color:#fff}
+.pc-own{font-size:10.5px;color:var(--text3);font-family:var(--mono);flex:1;overflow:hidden;text-overflow:ellipsis}
+.pc-deals{font-size:9.5px;color:var(--text4);font-family:var(--mono)}
+
+/* ──────────────── LIST VIEW ──────────────── */
+#list-wrap{flex:1;overflow-y:auto;display:none}
+.lt{width:100%;border-collapse:collapse}
+.lt th{padding:8px 12px;text-align:left;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid rgba(255,255,255,.12);position:sticky;top:0;z-index:3;cursor:pointer;white-space:nowrap}
+.lt th.gh{background:var(--green);color:#fff}.lt th.ph{background:var(--purple);color:#fff}
+.lt td{padding:0 12px;height:44px;vertical-align:middle;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);white-space:nowrap;background:var(--surface)}
+.lt tr{cursor:pointer}.lt tr:hover td{background:#F4F7FF}.lt tr.sel td{background:var(--blue-l)}
+.lt-name{color:var(--text);font-weight:600;display:flex;align-items:center;gap:7px}
+.lt-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.mono{font-family:var(--mono);font-size:11px}
+
+/* ──────────────── EMAIL VIEW ──────────────── */
+#email-wrap{flex:1;display:none;flex-direction:column;overflow:hidden}
+.email-toolbar{padding:9px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.email-body{flex:1;display:flex;overflow:hidden}
+.email-sb{width:188px;min-width:188px;border-right:1px solid var(--border);background:var(--surf2);display:flex;flex-direction:column;padding:8px 7px;overflow-y:auto;flex-shrink:0}
+.efolder{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:var(--r);cursor:pointer;font-size:12.5px;color:var(--text2);transition:all .12s;font-family:var(--font)}
+.efolder:hover{background:var(--surf3)}.efolder.on{background:var(--blue-l);color:var(--blue);font-weight:600}
+.efolder-ct{margin-left:auto;font-size:9.5px;font-family:var(--mono);background:var(--blue);color:#fff;padding:1px 6px;border-radius:20px}
+.email-list{width:280px;min-width:280px;border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;background:var(--surface)}
+.eitem{padding:11px 13px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.eitem:hover{background:var(--surf2)}.eitem.on{background:var(--blue-l);border-left:3px solid var(--blue);padding-left:10px}
+.eitem.unread .ei-subj{font-weight:700;color:var(--text)}
+.ei-fr{font-size:12px;font-weight:600;color:var(--text)}.ei-subj{font-size:11.5px;color:var(--text2);margin:2px 0}
+.ei-prev{font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ei-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+.ei-ts{font-size:10px;font-family:var(--mono);color:var(--text3)}
+.email-thread{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--surf2)}
+.thread-header{padding:14px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.th-subj{font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px}
+.th-meta{font-size:11.5px;color:var(--text3)}
+.thread-msgs{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+.emsg{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.emsg-h{padding:11px 15px;background:var(--surf2);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px}
+.emsg-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.emsg-name{font-size:12.5px;font-weight:600;color:var(--text)}.emsg-to{font-size:11px;color:var(--text3)}
+.emsg-ts{font-size:10px;font-family:var(--mono);color:var(--text3);margin-left:auto;white-space:nowrap}
+.emsg-body{padding:15px;font-size:13px;line-height:1.7;color:var(--text2);white-space:pre-wrap}
+.thread-compose{border-top:1px solid var(--border);background:var(--surface);padding:12px 18px;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.c-row{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:2px}
+.c-label{font-size:11.5px;font-weight:600;color:var(--text3);width:38px;flex-shrink:0}
+.c-inp{flex:1;background:none;border:none;outline:none;font-size:12.5px;font-family:var(--font);color:var(--text)}
+.c-body{width:100%;background:none;border:none;outline:none;font-size:13px;font-family:var(--font);color:var(--text);resize:none;min-height:90px;line-height:1.6}
+.c-bar{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+
+/* ──────────────── CALENDAR VIEW ──────────────── */
+#cal-wrap{flex:1;overflow:hidden;display:none;flex-direction:column}
+.cal-header{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.cal-nav-btn{width:28px;height:28px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);transition:all .12s}
+.cal-nav-btn:hover{background:var(--surf3)}
+.cal-month{font-size:16px;font-weight:700;color:var(--navy)}
+.cal-body{flex:1;overflow:auto;padding:16px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border-radius:var(--r2);overflow:hidden;border:1px solid var(--border)}
+.cal-dow{background:var(--navy);color:rgba(255,255,255,.7);font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:8px 4px}
+.cal-cell{background:var(--surface);min-height:96px;padding:6px 7px;cursor:pointer;transition:background .1s;position:relative}
+.cal-cell:hover{background:var(--surf2)}
+.cal-cell.today{background:var(--blue-l)}
+.cal-cell.other-month .cal-day{color:var(--text4)}
+.cal-day{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.cal-cell.today .cal-day{color:var(--blue);font-weight:800}
+.cal-event{font-size:10.5px;padding:2px 6px;border-radius:4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;font-weight:500}
+.cal-day-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.cal-cell.today .cal-day-num{background:var(--blue);color:#fff}
+.cal-legend{display:flex;gap:14px;align-items:center;padding:8px 16px;border-top:1px solid var(--border);background:var(--surface);flex-shrink:0}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+.leg-dot{width:10px;height:10px;border-radius:3px}
+
+/* ──────────────── MAP VIEW ──────────────── */
+#map-wrap{flex:1;display:none;flex-direction:column;overflow:hidden}
+.map-toolbar{padding:9px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.map-legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.map-leg-item{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text2)}
+.map-leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+#map-container{flex:1;position:relative}
+.maplibregl-popup-content{font-family:var(--font)!important;padding:12px 14px!important;border-radius:10px!important;box-shadow:0 8px 24px rgba(0,0,0,.14)!important;border:1px solid var(--border);min-width:200px}
+.map-popup-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.map-popup-type{font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
+.map-popup-row{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px;color:#374151}
+.map-popup-btn{margin-top:8px;width:100%;padding:6px;border-radius:6px;background:var(--navy);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)}
+.map-marker{width:28px;height:28px;border-radius:50%;border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:transform .15s}
+.map-marker:hover{transform:scale(1.15)}
+
+/* ──────────────── DETAIL PANEL ──────────────── */
+#dp{width:420px;min-width:420px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);box-shadow:-3px 0 12px rgba(0,0,0,.07)}
+#dp.open{transform:translateX(0)}
+.dp-head{background:var(--navy);padding:14px 15px;flex-shrink:0}
+.dp-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.dp-ic{width:38px;height:38px;border-radius:var(--r);background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.dp-name{font-size:16px;font-weight:700;color:#fff;line-height:1.2;flex:1}
+.dp-close{width:26px;height:26px;border-radius:5px;background:rgba(255,255,255,.1);border:none;cursor:pointer;font-size:14px;color:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;transition:all .12s;flex-shrink:0}
+.dp-close:hover{background:rgba(255,255,255,.18);color:#fff}
+.dp-meta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.dp-actions{display:flex;gap:5px}
+.dpa{flex:1;padding:7px;border-radius:var(--r);font-size:11.5px;font-weight:600;cursor:pointer;border:none;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:5px;transition:all .14s}
+.dpa-call{background:#E8F5E9;color:#1B5E20}.dpa-call:hover{background:#C8E6C9}
+.dpa-email{background:var(--blue-l);color:var(--blue)}.dpa-email:hover{background:#C7D7F7}
+.dpa-sms{background:var(--amber-l);color:var(--amber)}.dpa-sms:hover{background:#FFE082}
+.dp-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 15px;flex-shrink:0}
+.dtab{padding:9px 11px;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s}
+.dtab:hover{color:var(--text2)}.dtab.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:600}
+.dp-body{flex:1;overflow-y:auto;padding:13px 15px;display:flex;flex-direction:column;gap:12px}
+
+/* DETAIL SECTIONS */
+.ds{display:flex;flex-direction:column;gap:5px}
+.ds-title{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding-bottom:5px;border-bottom:1px solid var(--border)}
+.ds-title.pg{color:var(--green);border-color:#A3D9A8}.ds-title.pp{color:var(--purple);border-color:#BBA9E0}
+.fr{display:flex;align-items:baseline;gap:8px;padding:2px 0}
+.fl{font-size:11.5px;color:var(--text3);width:128px;flex-shrink:0}
+.fv{font-size:12.5px;color:var(--text);flex:1;line-height:1.4}
+.fv.mono{font-family:var(--mono);font-size:11.5px}
+.fv.link{color:var(--blue);text-decoration:none;cursor:pointer}.fv.link:hover{text-decoration:underline}
+.fv.ed{cursor:pointer;padding:2px 6px;margin:-2px -6px;border-radius:4px;transition:background .12s}.fv.ed:hover{background:var(--blue-l)}
+.ie{background:var(--blue-l);border:1px solid #AFC5F5;border-radius:4px;padding:2px 7px;font-size:12.5px;font-family:var(--font);color:var(--text);outline:none;width:100%}
+.stage-btns{display:flex;gap:4px;flex-wrap:wrap;padding:8px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--border)}
+.sbtn{padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-family:var(--font);transition:all .12s}
+.sbtn:hover{border-color:#AFC5F5;color:var(--blue)}.sbtn.on{background:var(--navy);border-color:var(--navy);color:#fff}
+
+/* ACTIVITY */
+.aitem{display:flex;gap:9px;padding:3px 0}
+.aicol{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.aiic{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.ailine{width:1px;background:var(--border);flex:1;min-height:12px}
+.aibody{flex:1;padding-bottom:8px}
+.ait{font-size:12.5px;color:var(--text);font-weight:500;line-height:1.3}.ais{font-size:10.5px;color:var(--text3);margin-top:1px;font-family:var(--mono)}
+.ain{font-size:12px;color:var(--text2);margin-top:4px;padding:6px 9px;background:var(--surf2);border-radius:var(--r);border-left:2px solid var(--border2);line-height:1.5}
+
+/* LINKED */
+.lcard{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);background:var(--surf2);border:1px solid var(--border);cursor:pointer;transition:all .12s;margin-bottom:5px}
+.lcard:hover{border-color:#AFC5F5;background:var(--blue-l)}
+.lc-ico{width:28px;height:28px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:#fff}
+.lc-name{font-size:12px;font-weight:600;color:var(--text)}.lc-sub{font-size:10.5px;color:var(--text3);font-family:var(--mono)}
+.lc-arr{margin-left:auto;color:var(--text3);font-size:12px}
+
+/* CUSTOM FIELDS */
+.cf-row{display:flex;align-items:center;gap:7px;padding:8px 10px;background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:5px}
+.cf-name{font-size:12px;font-weight:500;color:var(--text);flex:1}
+.cf-type{font-size:10px;font-family:var(--mono);color:var(--text3);width:65px}
+.cf-val{font-size:12px;color:var(--text2);flex:1;cursor:pointer;border-radius:3px;padding:1px 4px;transition:background .1s}
+.cf-val:hover{background:var(--blue-l)}
+.cf-del{width:20px;height:20px;border-radius:4px;border:1px solid var(--border);background:none;cursor:pointer;color:var(--text3);font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s}
+.cf-del:hover{background:var(--coral-l);border-color:#FCA5A5;color:var(--coral)}
+
+/* ──────────────── MODALS ──────────────── */
+.ov{position:fixed;inset:0;background:rgba(17,24,39,.4);display:flex;align-items:center;justify-content:center;z-index:900;backdrop-filter:blur(2px);animation:fdi .15s ease}
+@keyframes fdi{from{opacity:0}to{opacity:1}}
+.modal{background:var(--surface);border-radius:var(--r2);box-shadow:var(--sh3);width:500px;max-height:92vh;overflow-y:auto;animation:sli .18s ease}
+@keyframes sli{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal.sm{width:360px}.modal.lg{width:580px}
+.mh{padding:15px 18px 11px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between}
+.mt{font-size:16px;font-weight:700;color:var(--text)}.ms{font-size:12px;color:var(--text3);margin-top:2px}
+.mb{padding:15px 18px;display:flex;flex-direction:column;gap:11px}
+.mf{padding:10px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:7px}
+.mlab{font-size:11.5px;font-weight:500;color:var(--text2);display:block;margin-bottom:4px}
+.minp{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;font-family:var(--font);color:var(--text);background:var(--surface);outline:none;transition:border .13s}
+.minp:focus{border-color:var(--blue)}.mtxt{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;font-family:var(--font);color:var(--text);background:var(--surface);outline:none;resize:vertical;min-height:90px;transition:border .13s;line-height:1.6}
+.mtxt:focus{border-color:var(--blue)}
+/* CALL */
+.call-disp{background:var(--navy);border-radius:var(--r2);padding:18px;text-align:center;margin-bottom:4px}
+.cn{font-size:20px;font-weight:700;color:#fff;margin-bottom:2px}.cc{font-size:12.5px;color:rgba(255,255,255,.5)}
+.cs{font-size:12px;margin-top:8px;font-family:var(--mono)}.ct{font-size:36px;font-weight:700;color:#fff;font-family:var(--mono);margin:10px 0;letter-spacing:2px;display:none}
+.csi{color:rgba(255,255,255,.4)}.csr{color:#FFD54F;animation:bl 1s infinite}.csl{color:#A5D6A7}.cse{color:#EF9A9A}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.3}}
+.call-btns{display:flex;gap:7px;margin-top:7px}
+.cbtn{flex:1;padding:9px;border-radius:var(--r);font-size:11.5px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .14s;border:none;display:flex;flex-direction:column;align-items:center;gap:3px}
+.cbtn span:first-child{font-size:17px}
+.cb-m{background:var(--surf3);color:var(--text3)}.cb-h{background:var(--amber-l);color:var(--amber)}
+.cb-a{background:var(--green);color:#fff}.cb-e{background:var(--coral-l);color:var(--coral)}.cb-ea{background:var(--coral);color:#fff}
+.oc-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px}
+.ocbtn{padding:4px 10px;border-radius:20px;font-size:10.5px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-family:var(--font);transition:all .12s}
+.ocbtn:hover,.ocbtn.on{background:var(--navy);border-color:var(--navy);color:#fff}
+/* SMS */
+.sms-feed{height:240px;overflow-y:auto;padding:10px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--border);display:flex;flex-direction:column;gap:7px}
+.sms-bub{max-width:75%;padding:8px 12px;border-radius:14px;font-size:12.5px;line-height:1.5}
+.sms-out{align-self:flex-end;background:var(--navy);color:#fff;border-bottom-right-radius:3px}
+.sms-in{align-self:flex-start;background:var(--surface);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:3px}
+.sms-ts{font-size:9px;opacity:.5;display:block;margin-top:2px;text-align:right}
+/* NEWS */
+.news-card{background:linear-gradient(135deg,#F0FAF4,#E5F5EE);border:1px solid #A3D9A8;border-radius:var(--r2);padding:12px}
+.npulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:npls 2s infinite}
+@keyframes npls{0%{box-shadow:0 0 0 0 rgba(46,125,68,.4)}70%{box-shadow:0 0 0 8px rgba(46,125,68,0)}100%{box-shadow:0 0 0 0 rgba(46,125,68,0)}}
+
+/* MISC */
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--navy);color:#fff;padding:8px 18px;border-radius:8px;font-size:12.5px;font-weight:500;z-index:9999;transition:transform .23s;pointer-events:none;white-space:nowrap;box-shadow:var(--sh3)}
+.spin{animation:sp .7s linear infinite;display:inline-block}@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ──────────── SIDEBAR ──────────── -->
+<nav id="sb">
+  <div class="sb-top">
+    <div class="logo-box" id="sb-logo-box">
+      <span class="logo-s-text" id="sb-logo-fallback">S</span>
+    </div>
+    <div class="logo-wordmark">
+      <div class="logo-name">STOC</div>
+      <div class="logo-tag">Advisory</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section-label">Workspace</div>
+    <div class="sbi on" id="sbv-pipeline" onclick="sbNav(this,'pipeline')"><span class="sbi-ic">⬡</span>Pipeline<span class="sbi-ct" id="sbct">0</span></div>
+    <div class="sbi" id="sbv-list" onclick="sbNav(this,'list')"><span class="sbi-ic">≡</span>All Records</div>
+    <div class="sbi" id="sbv-email" onclick="sbNav(this,'email')"><span class="sbi-ic">✉</span>Emails<span class="sbi-ct">3</span></div>
+    <div class="sbi" id="sbv-cal" onclick="sbNav(this,'cal')"><span class="sbi-ic">📅</span>Calendar</div>
+    <div class="sbi" id="sbv-map" onclick="sbNav(this,'map')"><span class="sbi-ic">🗺</span>Map View</div>
+    <div class="sbi" onclick="toast('Analytics coming soon')"><span class="sbi-ic">◉</span>Analytics</div>
+    <div class="sbi" onclick="toast('Tasks coming soon')"><span class="sbi-ic">✓</span>Tasks<span class="sbi-ct">7</span></div>
+    <div class="sb-section-label" style="margin-top:6px">Record Types</div>
+    <div class="sbi" onclick="quickFilter('type','PE Firm')"><span class="sb-dot" style="background:#2E7D44"></span>PE Firms</div>
+    <div class="sbi" onclick="quickFilter('type','Investment Bank')"><span class="sb-dot" style="background:#147A70"></span>Inv. Banks</div>
+    <div class="sbi" onclick="quickFilter('type','Platform')"><span class="sb-dot" style="background:#B87100"></span>Platforms</div>
+    <div class="sbi" onclick="quickFilter('type','Dental Practice')"><span class="sb-dot" style="background:#5E3FB5"></span>Dental Practices</div>
+    <div class="sbi" onclick="quickFilter('type','All')"><span class="sb-dot" style="background:#9CA3AF"></span>All Types</div>
+  </div>
+  <div class="sb-foot">
+    <div class="sb-av" style="background:#2E5BE0">KG</div>
+    <div><div class="sb-uname">Karan Gupta</div><div class="sb-urole">Deal Lead</div></div>
+  </div>
+</nav>
+
+<!-- ──────────── MAIN ──────────── -->
+<div id="main">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <div class="tb-logo-wrap">
+      <div class="tb-logo-box" id="tb-logo-box">
+        <span class="tb-logo-s" id="tb-logo-fb">S</span>
+      </div>
+      <div class="tb-name">STOC — Relationship CRM</div>
+    </div>
+    <div class="tb-sep"></div>
+    <span class="tb-badge badge-active">● ACTIVE</span>
+    <span class="tb-badge badge-admin">⊕ ADMIN</span>
+    <div class="tb-right">
+      <button class="btn" onclick="openCFModal()">⊕ Custom Field</button>
+      <button class="btn btn-pri" onclick="openNewRecordModal()">+ New Record</button>
+    </div>
+  </div>
+
+  <!-- TAB NAV -->
+  <div id="tabnav">
+    <div class="tnav on" id="tn-pipeline" onclick="setView('pipeline',this)"><span class="tnav-ic">⬡</span>Pipeline</div>
+    <div class="tnav" id="tn-list" onclick="setView('list',this)"><span class="tnav-ic">≡</span>All Records</div>
+    <div class="tnav" id="tn-email" onclick="setView('email',this)"><span class="tnav-ic">✉</span>Emails</div>
+    <div class="tnav" id="tn-cal" onclick="setView('cal',this)"><span class="tnav-ic">📅</span>Calendar</div>
+    <div class="tnav" id="tn-map" onclick="setView('map',this)"><span class="tnav-ic">🗺</span>Map View</div>
+    <div class="tnav" onclick="toast('Analytics coming soon')"><span class="tnav-ic">◉</span>Analytics</div>
+    <div class="tnav" onclick="toast('Settings coming soon')"><span class="tnav-ic">⚙</span>Settings</div>
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="stats-row" id="stats-strip"></div>
+
+  <!-- FILTER BAR — DROPDOWNS -->
+  <div id="filterbar">
+    <div class="fsearch"><span style="font-size:14px;color:var(--text4)">⌕</span><input id="search-inp" placeholder="Search records, contacts..." oninput="applyFilters()"></div>
+    <div class="tb-sep"></div>
+    <select class="fsel" id="f-region" onchange="applyFilters()">
+      <option value="All">All Regions</option>
+      <option>Northeast</option><option>South</option><option>Midwest</option><option>West</option><option>National</option>
+    </select>
+    <select class="fsel" id="f-type" onchange="applyFilters()">
+      <option value="All">All Types</option>
+      <option>PE Firm</option><option>Investment Bank</option><option>Platform</option><option>Dental Practice</option>
+    </select>
+    <select class="fsel" id="f-stage" onchange="applyFilters()">
+      <option value="All">All Stages</option>
+      <option>New Lead</option><option>Outreach Sent</option><option>Engaged</option>
+      <option>Meeting Scheduled</option><option>Proposal</option><option>Active Partner</option><option>Not a Fit</option>
+    </select>
+    <select class="fsel" id="f-owner" onchange="applyFilters()">
+      <option value="All">All Owners</option>
+      <option>Peyton Evans</option><option>Lucius Burch</option><option>Andrew Swihart</option><option>Karan Gupta</option>
+    </select>
+    <select class="fsel" id="f-gtm" onchange="applyFilters()">
+      <option value="All">GTM Score</option>
+      <option value="3">★★★ Score 3</option><option value="2">★★ Score 2</option><option value="1">★ Score 1</option>
+    </select>
+    <div class="f-right">
+      <span class="fbadge" id="fcount">— records</span>
+      <button class="btn" style="font-size:11px;padding:4px 10px" onclick="clearFilters()">Clear</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content">
+    <div id="pipe-wrap"></div>
+    <div id="list-wrap"><table class="lt"><thead id="lt-head"></thead><tbody id="lt-body"></tbody></table></div>
+    <div id="email-wrap"></div>
+    <div id="cal-wrap"></div>
+    <div id="map-wrap">
+      <div class="map-toolbar">
+        <div class="map-legend" id="map-legend"></div>
+        <div style="margin-left:auto;font-size:11.5px;color:var(--text3);font-family:var(--mono)">Click any pin to view record details</div>
+      </div>
+      <div id="map-container"></div>
+    </div>
+
+    <!-- DETAIL PANEL -->
+    <div id="dp">
+      <div class="dp-head">
+        <div class="dp-top">
+          <div class="dp-ic" id="dp-ic">?</div>
+          <div class="dp-name" id="dp-name">—</div>
+          <button class="dp-close" onclick="closeDetail()">✕</button>
+        </div>
+        <div class="dp-meta" id="dp-meta"></div>
+        <div class="dp-actions">
+          <button class="dpa dpa-call" onclick="openCallModal(currentLead)">☎ Call</button>
+          <button class="dpa dpa-email" onclick="openEmailCompose(currentLead)">✉ Email</button>
+          <button class="dpa dpa-sms" onclick="openSmsModal(currentLead)">💬 SMS</button>
+        </div>
+      </div>
+      <div class="dp-tabs">
+        <div class="dtab on" onclick="setDTab('overview',this)">Overview</div>
+        <div class="dtab" onclick="setDTab('activity',this)">Activity</div>
+        <div class="dtab" onclick="setDTab('fields',this)">Fields</div>
+        <div class="dtab" onclick="setDTab('linked',this)">Linked</div>
+        <div class="dtab" onclick="setDTab('news',this)">⚡ News</div>
+      </div>
+      <div class="dp-body" id="dp-body"></div>
+    </div>
+  </div>
+</div>
+</div>
+<div id="toast"></div>
+<script src="https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js"></script>
+<script>
+// ════════════════════════════════════════════════════════
+// LOGO LOADER — try actual STOC logo, fallback to styled text
+// ════════════════════════════════════════════════════════
+(function(){
+  const urls = [
+    'https://www.stocadvisory.com/_next/image?url=%2Fstoc-main-logo-cropped.png&w=256&q=75',
+    'https://www.stocadvisory.com/stoc-main-logo-cropped.png',
+  ];
+  let tried = 0;
+  function tryLoad(){
+    if(tried >= urls.length) return;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function(){
+      // SUCCESS — replace the box with the real logo
+      ['sb-logo-box','tb-logo-box'].forEach(id=>{
+        const box = document.getElementById(id);
+        if(!box) return;
+        box.innerHTML = '';
+        const i = document.createElement('img');
+        i.src = urls[tried];
+        i.style.cssText = 'width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1)';
+        box.appendChild(i);
+      });
+    };
+    img.onerror = function(){ tried++; tryLoad(); };
+    img.src = urls[tried];
+  }
+  tryLoad();
+})();
+
+// ════════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════════
+const STAGES = ["New Lead","Outreach Sent","Engaged","Meeting Scheduled","Proposal","Active Partner","Not a Fit"];
+const SC = {"New Lead":"#9CA3AF","Outreach Sent":"#2E5BE0","Engaged":"#147A70","Meeting Scheduled":"#B87100","Proposal":"#5E3FB5","Active Partner":"#2E7D44","Not a Fit":"#C03030"};
+const OC = {"Peyton Evans":"#2E5BE0","Lucius Burch":"#147A70","Andrew Swihart":"#B87100","Karan Gupta":"#2E7D44","":	"#9CA3AF"};
+const OI = {"Peyton Evans":"PE","Lucius Burch":"LB","Andrew Swihart":"AS","Karan Gupta":"KG","":"??","Unassigned":"UN"};
+const TC = {"PE Firm":"#2E7D44","Investment Bank":"#147A70","Platform":"#B87100","Dental Practice":"#5E3FB5"};
+const TT = {"PE Firm":"tg","Investment Bank":"tt","Platform":"ta","Dental Practice":"tp"};
+const STARS = (n)=>[1,2,3].map(i=>`<span style="color:${i<=n?"#B87100":"#D1D5DB"}"">★</span>`).join('');
+
+// ════════════════════════════════════════════════════════
+// LEAD DATA
+// ════════════════════════════════════════════════════════
+let leads = [
+  {id:"PE001",rtype:"PE Firm",name:"Argosy Private Equity",contact:"Kevin Moses",title:"Vice President",email:"kmoses@argosycapital.com",phone:"",website:"http://www.argosyprivateequity.com",region:"Northeast",aum:"1,100",inv6m:7,inv12m:11,inv2y:19,peType:"PE/Buyout",sector:"DealMAX - TAS; PE Companies",service:"Growth Enablement",portfolio:"American Leather Inc, Barco Products, Bionix Development",linkedin:"https://www.linkedin.com/company/argosy-partners",owner:"Peyton Evans",gtm:2,stage:"Outreach Sent",desc:"Founded 1990. Wayne, PA. Aviation, business financing, engineered materials, industrial electronics.",acqRegion:"Mid-Atlantic",size:"11-50 employees",ndaSent:false,questionnaire:"Not Sent",gtmP1:"GTM strategy for portfolio cos",gtmP2:"",investorId:"PB-11260-99",coords:[-75.39,40.05],
+   activities:[{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Email sent via sequence",sub:"May 8, 2026 · 9:14 AM · PE",note:"Intro email to Kevin Moses re: Growth Enablement."},{icon:"⊕",bg:"#F3F4F6",ic:"#9CA3AF",title:"Record created from Pitchbook",sub:"May 4, 2025 · Auto"}],linked:[]},
+
+  {id:"PE002",rtype:"PE Firm",name:"O2 Investment Partners",contact:"Tim Addison",title:"VP - Tax and Operations",email:"taddison@o2investment.com",phone:"",website:"http://www.o2investment.com",region:"Midwest",aum:"2,000",inv6m:10,inv12m:32,inv2y:54,peType:"PE/Buyout",sector:"PE Companies",service:"Growth Enablement",portfolio:"Harley Exteriors, Azureon, Straightaway Tire & Auto",linkedin:"https://www.linkedin.com/company/o2-investment-partners",owner:"Lucius Burch",gtm:2,stage:"Engaged",desc:"Founded 2010. Bloomfield Hills, MI. Lower middle-market B2B services, technology, and niche industrial.",acqRegion:"Midwest",size:"11-50 employees",ndaSent:false,questionnaire:"Not Sent",gtmP1:"B2B services GTM optimization",gtmP2:"Portfolio revenue acceleration",investorId:"PB-51426-10",coords:[-83.24,42.58],
+   activities:[{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Call · 14 min · Tim Addison",sub:"May 10, 2026 · LB",note:"Tim wants case studies on B2B services portcos."},{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Follow-up email sent",sub:"May 9, 2026 · LB"}],linked:[]},
+
+  {id:"PE003",rtype:"PE Firm",name:"Excellere Partners",contact:"Ian Beck",title:"Vice President",email:"ibeck@excellere.com",phone:"",website:"http://www.Excellere.com",region:"West",aum:"2,107",inv6m:1,inv12m:5,inv2y:7,peType:"PE/Buyout",sector:"PE Companies",service:"Growth Enablement",portfolio:"Apex Water and Process, CDL, Advanced Pain Management, LucidHealth",linkedin:"https://www.linkedin.com/company/excellere-partners",owner:"Peyton Evans",gtm:2,stage:"Meeting Scheduled",desc:"Founded 2006. Denver, CO. Healthcare, business services, industrial tech.",acqRegion:"Mountain West",size:"11-50 employees",ndaSent:true,questionnaire:"Sent",gtmP1:"Healthcare portfolio GTM",gtmP2:"Services-sector expansion",investorId:"PB-12784-96",coords:[-104.98,39.74],
+   activities:[{icon:"📅",bg:"#FFF4DC",ic:"#B87100",title:"Meeting: May 15, 10:00 AM",sub:"Confirmed · PE"},{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"NDA sent",sub:"May 6, 2026 · PE"}],linked:[]},
+
+  {id:"PE004",rtype:"PE Firm",name:"LFM Capital",contact:"Jessica Ginsberg",title:"MD, Business Development",email:"jessica@lfmcapital.com",phone:"",website:"http://www.lfmcapital.com",region:"South",aum:"1,000",inv6m:2,inv12m:7,inv2y:0,peType:"PE/Buyout",sector:"PE Companies",service:"Growth Enablement",portfolio:"American Automation Group, Alloy, APQS",linkedin:"https://www.linkedin.com/company/lfm-capital",owner:"Andrew Swihart",gtm:2,stage:"Proposal",desc:"Nashville-based PE. Lower middle-market industrial, manufacturing, services.",acqRegion:"Southeast",size:"11-50 employees",ndaSent:true,questionnaire:"Sent",gtmP1:"Industrial services GTM",gtmP2:"M&A-readiness for portcos",investorId:"PB-LFM-01",coords:[-86.78,36.17],
+   activities:[{icon:"📄",bg:"#EEE9FF",ic:"#5E3FB5",title:"Formal proposal sent",sub:"May 11, 2026 · AS",note:"Awaiting response by EOW."},{icon:"📅",bg:"#FFF4DC",ic:"#B87100",title:"Intro meeting · 45 min",sub:"May 8, 2026 · AS"}],linked:[]},
+
+  {id:"PE005",rtype:"PE Firm",name:"New State Capital Partners",contact:"Geoff Coar",title:"Principal",email:"gcoar@newstatecp.com",phone:"",website:"http://www.newstatecp.com",region:"Northeast",aum:"1,214",inv6m:3,inv12m:8,inv2y:0,peType:"PE/Buyout",sector:"PE Companies",service:"Growth Enablement",portfolio:"University Instructors, The Expo Group, Universal Plant Services",linkedin:"https://www.linkedin.com/company/new-state-capital-partners",owner:"Peyton Evans",gtm:2,stage:"Engaged",desc:"Lower middle-market PE. Business services focus. Northeast geography.",acqRegion:"Northeast",size:"11-50 employees",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Services-sector GTM",gtmP2:"",investorId:"PB-NSCP-01",coords:[-74.01,40.71],
+   activities:[{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Reply received — positive interest",sub:"May 9, 2026",note:"Geoff asked for one-pager on STOC track record."}],linked:[]},
+
+  {id:"PE006",rtype:"PE Firm",name:"Access Holdings",contact:"Priscilla Li",title:"PE Vice President",email:"pli@accessholdings.com",phone:"",website:"http://www.accessholdings.com",region:"South",aum:"2,900",inv6m:3,inv12m:4,inv2y:12,peType:"PE/Buyout",sector:"PE Companies",service:"",portfolio:"WagWay, Zeus Fire and Security, Oasis Marinas",linkedin:"https://www.linkedin.com/company/access-holdings",owner:"",gtm:1,stage:"New Lead",desc:"Founded 2013. Baltimore, MD. Service-based businesses in US and Canada.",acqRegion:"Mid-Atlantic",size:"11-50 employees",ndaSent:false,questionnaire:"Not Sent",gtmP1:"",gtmP2:"",investorId:"PB-56052-55",coords:[-76.61,39.29],
+   activities:[{icon:"⊕",bg:"#F3F4F6",ic:"#9CA3AF",title:"Record created from Pitchbook",sub:"May 4, 2025 · Auto"}],linked:[]},
+
+  {id:"PE007",rtype:"PE Firm",name:"Alpine Investors",contact:"Tom Ulricson",title:"Principal",email:"tulricson@alpineinvestors.com",phone:"",website:"https://www.alpineinvestors.com",region:"West",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"PE/Buyout",sector:"PE Companies",service:"",portfolio:"",linkedin:"",owner:"Lucius Burch",gtm:2,stage:"Meeting Scheduled",desc:"San Francisco PE. PeopleFirst approach. Software, services, healthcare.",acqRegion:"West Coast",size:"51-200 employees",ndaSent:true,questionnaire:"Sent",gtmP1:"Healthcare services GTM",gtmP2:"SaaS portco growth",investorId:"PB-ALP-01",coords:[-122.42,37.77],
+   activities:[{icon:"📅",bg:"#FFF4DC",ic:"#B87100",title:"Zoom call: May 16, 2:00 PM",sub:"Confirmed · LB"}],linked:[]},
+
+  {id:"PE008",rtype:"PE Firm",name:"Graham Healthcare Capital",contact:"Jim Ward",title:"Managing Director",email:"jward@southeastacquisition.com",phone:"+1 703-819-5819",website:"https://www.grahamhealthcarecapital.com/",region:"Northeast",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Healthcare PE",sector:"Healthcare",service:"Growth Enablement",portfolio:"Residential Healthcare Group, Allegheny Health, Mary Free Bed",linkedin:"https://www.linkedin.com/company/graham-healthcare-capital",owner:"Karan Gupta",gtm:3,stage:"Active Partner",desc:"Healthcare services investing exclusively. Majority recaps with management teams.",acqRegion:"Mid-Atlantic",size:"11-50 employees",ndaSent:true,questionnaire:"Completed",gtmP1:"Healthcare portco GTM acceleration",gtmP2:"Referral partner introductions",investorId:"PB-GHC-01",coords:[-77.03,38.89],
+   activities:[{icon:"🤝",bg:"#E8F5E9",ic:"#1B5E20",title:"Partnership agreement signed",sub:"Apr 30, 2026 · KG",note:"STOC providing GTM support to portfolio companies."},{icon:"📅",bg:"#FFF4DC",ic:"#B87100",title:"Intro meeting · 60 min",sub:"Apr 15, 2026 · KG"}],linked:["IB001","PL001"]},
+
+  {id:"PE009",rtype:"PE Firm",name:"Hidden Harbor Capital",contact:"Allison Goldman",title:"VP, Business Development",email:"agoldman@hh-cp.com",phone:"",website:"http://www.hh-cp.com",region:"South",aum:"1,900",inv6m:7,inv12m:11,inv2y:0,peType:"PE/Buyout",sector:"PE Companies",service:"Growth Enablement",portfolio:"Monster Transmission, KT-Grant",linkedin:"https://www.linkedin.com/company/hidden-harbor-capital-partners",owner:"",gtm:2,stage:"Engaged",desc:"Founder-led lower middle-market. Services, distribution, specialty manufacturing.",acqRegion:"South",size:"11-50 employees",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Distribution channel optimization",gtmP2:"",investorId:"PB-HH-01",coords:[-95.37,29.76],
+   activities:[{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Reply received — positive",sub:"May 11, 2026",note:"Allison looping in her partner."},{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Outreach sent",sub:"May 9, 2026"}],linked:[]},
+
+  // INVESTMENT BANKS
+  {id:"IB001",rtype:"Investment Bank",name:"Harris Williams",contact:"Sarah Chen",title:"Managing Director",email:"s.chen@harriswilliams.com",phone:"",website:"https://www.harriswilliams.com",region:"National",aum:"",inv6m:0,inv12m:14,inv2y:0,peType:"Upper Middle Market",sector:"Healthcare; Services; Tech",service:"M&A Advisory",portfolio:"",linkedin:"",owner:"Karan Gupta",gtm:3,stage:"Active Partner",desc:"Upper middle-market M&A advisor. Dominant healthcare practice. $50M–$500M EV range.",acqRegion:"National",size:"501-1000",ndaSent:true,questionnaire:"Completed",gtmP1:"Dental/DSO exclusive mandates",gtmP2:"Early looks on healthcare add-ons",investorId:"",coords:[-77.44,37.54],
+   activities:[{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Call · Sarah Chen · 25 min",sub:"Today, 8:45 AM · KG",note:"Sarah shared 2 new dental mandates. FL group, 18 locations. Move fast."},{icon:"🤝",bg:"#E8F5E9",ic:"#1B5E20",title:"Dinner meeting — HW team",sub:"Apr 28, 2026 · KG + AS"}],linked:["PE008","PL001"]},
+
+  {id:"IB002",rtype:"Investment Bank",name:"Brown Gibbons Lang",contact:"David Park",title:"Director",email:"d.park@bglco.com",phone:"",website:"https://www.bglco.com",region:"Midwest",aum:"",inv6m:0,inv12m:7,inv2y:0,peType:"Middle Market",sector:"Healthcare; Business Services; Consumer",service:"M&A Advisory",portfolio:"",linkedin:"",owner:"Lucius Burch",gtm:2,stage:"Engaged",desc:"Midwest-focused middle market boutique. $20M–$200M EV. Strong dental practice.",acqRegion:"Midwest + Southeast",size:"51-200",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Midwest dental add-on mandates",gtmP2:"Platform acquisition sourcing",investorId:"",coords:[-81.69,41.50],
+   activities:[{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Call · David Park · 15 min",sub:"3 days ago · LB"}],linked:["PE009","PL002"]},
+
+  {id:"IB003",rtype:"Investment Bank",name:"Lazard Healthcare",contact:"Michael Torres",title:"Vice President",email:"m.torres@lazard.com",phone:"",website:"https://www.lazard.com",region:"National",aum:"",inv6m:0,inv12m:9,inv2y:0,peType:"Bulge Bracket",sector:"Healthcare; Life Sciences",service:"Referral Partner",portfolio:"",linkedin:"",owner:"Andrew Swihart",gtm:2,stage:"Engaged",desc:"Bulge bracket healthcare practice. $200M+ EV focus. PE firm introductions.",acqRegion:"National",size:"5001+",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Large PE firm introductions",gtmP2:"Healthcare deal flow",investorId:"",coords:[-73.99,40.75],
+   activities:[{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Intro via Northeast Capital",sub:"1 week ago · AS"}],linked:["PE005"]},
+
+  {id:"IB004",rtype:"Investment Bank",name:"Lincoln International",contact:"Rachel Avery",title:"Managing Director",email:"ravery@lincolninternational.com",phone:"",website:"https://www.lincolninternational.com",region:"National",aum:"",inv6m:0,inv12m:11,inv2y:0,peType:"Upper Middle Market",sector:"Business Services; Healthcare; Consumer",service:"M&A Advisory",portfolio:"",linkedin:"",owner:"Peyton Evans",gtm:1,stage:"Outreach Sent",desc:"Global upper middle market M&A advisor. Strong business services practice.",acqRegion:"National",size:"201-500",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Business services mandates",gtmP2:"",investorId:"",coords:[-87.63,41.88],
+   activities:[{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Initial outreach sent",sub:"May 10, 2026 · PE"}],linked:[]},
+
+  // PLATFORMS
+  {id:"PL001",rtype:"Platform",name:"SunBridge Dental Group",contact:"Kyle Merritt",title:"CEO",email:"k.merritt@sunbridgedental.com",phone:"+1 813-555-0192",website:"https://sunbridgedental.com",region:"South",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"DSO / Dental Platform",sector:"Dental DSO",service:"Sourcing + Advisory",portfolio:"24 locations across FL, NC, SC",linkedin:"",owner:"Karan Gupta",gtm:3,stage:"Active Partner",desc:"PE-backed dental DSO. 24 locations across Southeast. Actively acquiring add-on practices.",acqRegion:"Southeast",size:"201-500",ndaSent:true,questionnaire:"Completed",gtmP1:"SE add-on acquisitions (FL/NC)",gtmP2:"Operating efficiency program",investorId:"",coords:[-82.46,27.95],
+   activities:[{icon:"⊕",bg:"#E8F5E9",ic:"#1B5E20",title:"3 add-on targets linked (FL batch)",sub:"Yesterday · KG"},{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Weekly pipeline review call",sub:"3 days ago · KG"}],linked:["PE008","IB001","DP001","DP002"]},
+
+  {id:"PL002",rtype:"Platform",name:"Prairie Dental Platform",contact:"Sandra Wu",title:"VP Operations",email:"swu@prairiedental.com",phone:"",website:"",region:"Midwest",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Dental Platform",sector:"Dental DSO",service:"Sourcing",portfolio:"8 locations in IL, OH",linkedin:"",owner:"Lucius Burch",gtm:2,stage:"Active Partner",desc:"Recently acquired Midwest dental platform. Active add-on search in IL and OH.",acqRegion:"Midwest",size:"51-200",ndaSent:true,questionnaire:"Sent",gtmP1:"IL/OH expansion pipeline",gtmP2:"Clinical ops standardization",investorId:"",coords:[-87.99,41.83],
+   activities:[{icon:"⊕",bg:"#FFF4DC",ic:"#B87100",title:"Portco record created post-close",sub:"2 weeks ago · LB"}],linked:["IB002","DP003"]},
+
+  {id:"PL003",rtype:"Platform",name:"Clarity Vision Partners",contact:"Derek Shah",title:"COO",email:"dshah@clarityv.com",phone:"",website:"",region:"West",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Eye Care Platform",sector:"Ophthalmology",service:"Advisory",portfolio:"12 locations CA, AZ, NV",linkedin:"",owner:"Peyton Evans",gtm:2,stage:"Engaged",desc:"PE-backed eye care platform expanding in Western US through acquisitions.",acqRegion:"West Coast",size:"51-200",ndaSent:false,questionnaire:"Not Sent",gtmP1:"West Coast practice acquisitions",gtmP2:"",investorId:"",coords:[-118.24,34.05],
+   activities:[{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Intro meeting request sent",sub:"May 9, 2026 · PE"}],linked:["PE007"]},
+
+  // DENTAL PRACTICES
+  {id:"DP001",rtype:"Dental Practice",name:"Advanced Dental Care of Miami",contact:"Dr. Elena Rivera",title:"Owner / DDS",email:"erivera@advanceddental-miami.com",phone:"(305) 555-0142",website:"",region:"South",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Single Practice",sector:"General Dentistry",service:"M&A Target",portfolio:"",linkedin:"",owner:"Karan Gupta",gtm:2,stage:"Proposal",desc:"Miami-area general dentistry. 3 locations, 4 dentists. Owner Dr. Rivera (58) exploring transition.",acqRegion:"Southeast",size:"11-50",ndaSent:true,questionnaire:"Completed",gtmP1:"Practice sale to SunBridge",gtmP2:"",investorId:"",coords:[-80.19,25.77],
+   activities:[{icon:"📄",bg:"#EEE9FF",ic:"#5E3FB5",title:"LOI submitted",sub:"Yesterday · KG",note:"LOI sent for SunBridge acquisition. Awaiting countersignature."},{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Call · 34 min · Dr. Rivera",sub:"3 days ago · KG",note:"Confirmed running a process. 2 other groups in conversation."}],linked:["PL001"]},
+
+  {id:"DP002",rtype:"Dental Practice",name:"Carolina Oral Health Network",contact:"Dr. James Fitzpatrick",title:"Managing Partner",email:"j.fitzpatrick@carolinaoral.com",phone:"(704) 555-0087",website:"",region:"South",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Group Practice",sector:"Oral Surgery; General",service:"M&A Target",portfolio:"",linkedin:"",owner:"Karan Gupta",gtm:2,stage:"Engaged",desc:"Charlotte-area dental network. 12 locations across NC/SC. Multi-specialty group.",acqRegion:"Southeast",size:"51-200",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Platform add-on for SunBridge",gtmP2:"",investorId:"",coords:[-80.84,35.23],
+   activities:[{icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:"Intro call · 20 min",sub:"May 10, 2026 · KG",note:"Dr. Fitzpatrick open to exploring. Wants to understand structure."},{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Intro email sent",sub:"May 8, 2026"}],linked:["PL001"]},
+
+  {id:"DP003",rtype:"Dental Practice",name:"Prairie Smiles Associates",contact:"Dr. Michael Patel",title:"Owner",email:"mpatel@prairiesmiles.com",phone:"(312) 555-0055",website:"",region:"Midwest",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"Single Practice",sector:"General Dentistry",service:"M&A Target",portfolio:"",linkedin:"",owner:"Lucius Burch",gtm:1,stage:"Outreach Sent",desc:"Chicago suburban general dentistry. 2 locations. Owner approaching retirement.",acqRegion:"Midwest",size:"1-10",ndaSent:false,questionnaire:"Not Sent",gtmP1:"Add-on for Prairie Dental",gtmP2:"",investorId:"",coords:[-87.88,42.02],
+   activities:[{icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Initial outreach via email",sub:"May 8, 2026 · LB"}],linked:["PL002"]},
+
+  // DEMO RECORDS
+  {id:"DEMO001",rtype:"PE Firm",name:"[DEMO] Apex DSO Holdings",contact:"Sample Contact",title:"Managing Director",email:"demo@example.com",phone:"+1 555-0001",website:"https://example.com",region:"South",aum:"3,200",inv6m:5,inv12m:12,inv2y:22,peType:"PE/Buyout",sector:"Dental DSO; Healthcare",service:"Growth Enablement",portfolio:"SunBridge Dental, TrueSmile Group, Lakeside DSO",linkedin:"",owner:"Karan Gupta",gtm:3,stage:"Active Partner",desc:"[DEMO RECORD] Fully-linked PE firm example. Connected to a Platform, Investment Bank, and Dental Practice. Demonstrates multi-level record linking across all 4 record types.",acqRegion:"Southeast",size:"11-50",ndaSent:true,questionnaire:"Completed",gtmP1:"Dental roll-up Southeast",gtmP2:"Co-invest on mid-market deals",investorId:"DEMO-001",coords:[-84.39,33.75],
+   activities:[{icon:"🔗",bg:"#FFF3E0",ic:"#D84315",title:"[DEMO] 4-way record linking example",sub:"Shows PE → Platform → Practice → IB flow",note:"This record is linked to SunBridge Dental (Platform), Harris Williams (IB), and Carolina Oral Health (Practice). Demonstrates cross-entity navigation."}],linked:["PL001","IB001","DP002"]},
+
+  {id:"DEMO002",rtype:"Platform",name:"[DEMO] TechCare Analytics",contact:"Sample CEO",title:"CEO",email:"demo2@example.com",phone:"",website:"",region:"South",aum:"",inv6m:0,inv12m:0,inv2y:0,peType:"SaaS Portco",sector:"Health Tech; SaaS",service:"Operating Advisory",portfolio:"",linkedin:"",owner:"Peyton Evans",gtm:2,stage:"Proposal",desc:"[DEMO RECORD] SaaS/Health Tech portco example. Shows how a technology platform company would appear. Linked to parent PE firm and advising IB. Replace this with real data.",acqRegion:"National",size:"11-50",ndaSent:false,questionnaire:"Not Sent",gtmP1:"SaaS go-to-market optimization",gtmP2:"Channel partnership strategy",investorId:"",coords:[-97.74,30.27],
+   activities:[{icon:"⊕",bg:"#FFF3E0",ic:"#D84315",title:"[DEMO] Example SaaS portco record",sub:"Illustrative — replace with real data"},{icon:"🔗",bg:"#FFF3E0",ic:"#D84315",title:"[DEMO] Linked to parent PE + IB",sub:"Shows multi-level linking"}],linked:["PE001","IB003"]},
+];
+
+// Update cross-links
+leads.find(l=>l.id==="PE008").linked = ["IB001","PL001"];
+leads.find(l=>l.id==="IB001").linked = ["PE008","PL001"];
+
+// Custom fields
+let customFields = [
+  {name:"Investor-ID",type:"Text",group:"Firm Intelligence"},
+  {name:"Total Investments (2yr)",type:"Number",group:"Firm Intelligence"},
+  {name:"GTM Priority #1",type:"Text",group:"STOC"},
+  {name:"GTM Priority #2",type:"Text",group:"STOC"},
+  {name:"NDA Sent",type:"Yes/No",group:"STOC"},
+  {name:"Questionnaire",type:"Dropdown",group:"STOC"},
+  {name:"Acquisition Region",type:"Text",group:"Deal Info"},
+  {name:"STOC Service Line",type:"Dropdown",group:"STOC"},
+];
+
+// ════════════════════════════════════════════════════════
+// EMAIL DATA
+// ════════════════════════════════════════════════════════
+const EMAILS = [
+  {id:"E001",folder:"inbox",unread:true,from:"Sarah Chen",email:"s.chen@harriswilliams.com",to:"karan@stocadvisory.com",subj:"Re: STOC × Harris Williams — New FL Mandate",ts:"Today 8:42 AM",lead:"IB001",thread:[
+    {dir:"in",from:"Sarah Chen",ts:"Today 8:42 AM",body:"Hi Karan,\n\nFollowing up on our call — attaching teasers for the FL dental group (18 locations, ~$4.2M EBITDA). They're running a tight process, 3-week exclusivity window.\n\nCan your team move quickly on this one? Let me know by EOD.\n\nBest,\nSarah Chen\nManaging Director, Harris Williams"},
+    {dir:"out",from:"Karan Gupta",ts:"Yesterday 4:15 PM",body:"Hi Sarah,\n\nThank you for the early look. We've been targeting FL groups in that size range for SunBridge — this looks very promising.\n\nExecuting NDA now and will follow up with an initial call request.\n\nBest,\nKaran\nSTOC Advisory"},
+  ]},
+  {id:"E002",folder:"inbox",unread:true,from:"Tim Addison",email:"taddison@o2investment.com",to:"karan@stocadvisory.com",subj:"RE: STOC Advisory — GTM Services for PE Portfolios",ts:"Yesterday 11:22 AM",lead:"PE002",thread:[
+    {dir:"in",from:"Tim Addison",ts:"Yesterday 11:22 AM",body:"Hi,\n\nThanks for reaching out. This looks interesting — we've been thinking about GTM improvements across a few of our portfolio companies.\n\nCould you send over some case studies specific to B2B services firms?\n\nTim Addison\nO2 Investment Partners"},
+    {dir:"out",from:"Lucius Burch",ts:"May 9 8:00 AM",body:"Hi Tim,\n\nI'm Lucius, I work alongside Karan on our PE relationship team.\n\nWe'd love to share some examples specific to your sectors — would you have 20 minutes for a brief call this week?\n\nBest,\nLucius Burch\nSTOC Advisory"},
+  ]},
+  {id:"E003",folder:"inbox",unread:false,from:"Jessica Ginsberg",email:"jessica@lfmcapital.com",to:"andrew@stocadvisory.com",subj:"Proposal Review — STOC Engagement",ts:"May 11 3:44 PM",lead:"PE004",thread:[
+    {dir:"in",from:"Jessica Ginsberg",ts:"May 11 3:44 PM",body:"Andrew,\n\nThank you for the proposal. A few questions:\n\n1. Typical engagement timeline?\n2. What success metrics do you track?\n3. Industrial manufacturing portcos specifically?\n\nJessica\nLFM Capital"},
+    {dir:"out",from:"Andrew Swihart",ts:"May 11 2:00 PM",body:"Hi Jessica,\n\nGreat meeting — I've prepared the formal engagement proposal as discussed.\n\nKey highlights:\n• Customized GTM strategy for LFM portcos\n• Industrial sector expertise\n• Flexible engagement model\n\nBest,\nAndrew Swihart\nSTOC Advisory"},
+  ]},
+  {id:"E004",folder:"sent",unread:false,from:"Karan Gupta",email:"karan@stocadvisory.com",to:"ibeck@excellere.com",subj:"NDA — STOC Advisory × Excellere Partners",ts:"May 6 4:00 PM",lead:"PE003",thread:[
+    {dir:"out",from:"Karan Gupta",ts:"May 6 4:00 PM",body:"Hi Ian,\n\nAs discussed, please find attached our standard NDA for your review.\n\nOnce signed, I'll share our detailed capabilities deck and healthcare case studies.\n\nLooking forward to our call on the 15th.\n\nBest,\nKaran Gupta\nSTOC Advisory"},
+  ]},
+  {id:"E005",folder:"drafts",unread:false,from:"Karan Gupta",email:"karan@stocadvisory.com",to:"agoldman@hh-cp.com",subj:"STOC × Hidden Harbor — Intro Call",ts:"Draft · May 11",lead:"PE009",thread:[
+    {dir:"draft",from:"Karan Gupta",ts:"Draft",body:"Hi Allison,\n\nThank you for your note — we're excited to connect with you and your partner.\n\n[ADD: Proposed meeting times]\n[ADD: Attach case studies]\n\nBest,\nKaran"},
+  ]},
+];
+
+const TEMPLATES = {
+  intro:{subj:"STOC Advisory — Growth Partnership Opportunity",body:"Hi {first},\n\nHope this finds you well. I'm reaching out from STOC Advisory — we specialize in Growth Enablement Services for lower middle-market PE firms and their portfolio companies.\n\nWould you have 20 minutes this week for a brief intro call?\n\nBest,\nKaran Gupta\nSTOC Advisory"},
+  followup:{subj:"Following Up — STOC Advisory",body:"Hi {first},\n\nJust following up on my earlier note. Worth a quick 15-minute call?\n\nBest,\nKaran"},
+  nda:{subj:"NDA — STOC Advisory",body:"Hi {first},\n\nAs discussed, please find attached our standard NDA for your review.\n\nBest,\nKaran Gupta\nSTOC Advisory"},
+  proposal:{subj:"STOC Advisory — Engagement Proposal",body:"Hi {first},\n\nThank you for the productive conversation. Attached is our formal engagement proposal.\n\nBest,\nKaran Gupta\nSTOC Advisory"},
+};
+
+// CALENDAR EVENTS
+const CAL_EVENTS = [
+  {date:"2026-05-06",type:"call",title:"Call · Ian Beck · Excellere",lead:"PE003",color:"#2E7D44"},
+  {date:"2026-05-07",type:"email",title:"Outreach batch · Blue Sage, LFM",lead:null,color:"#2E5BE0"},
+  {date:"2026-05-08",type:"call",title:"Call · Harris Williams · 25m",lead:"IB001",color:"#2E7D44"},
+  {date:"2026-05-09",type:"email",title:"Reply · Tim Addison · O2",lead:"PE002",color:"#2E5BE0"},
+  {date:"2026-05-10",type:"call",title:"Call · Tim Addison · 14m",lead:"PE002",color:"#2E7D44"},
+  {date:"2026-05-11",type:"proposal",title:"Proposal · LFM Capital",lead:"PE004",color:"#5E3FB5"},
+  {date:"2026-05-12",type:"meeting",title:"TODAY — Harris Williams call",lead:"IB001",color:"#B87100"},
+  {date:"2026-05-12",type:"call",title:"TODAY — Dr. Rivera · LOI",lead:"DP001",color:"#2E7D44"},
+  {date:"2026-05-15",type:"meeting",title:"Intro call · Excellere",lead:"PE003",color:"#B87100"},
+  {date:"2026-05-16",type:"meeting",title:"Zoom · Alpine Investors",lead:"PE007",color:"#B87100"},
+  {date:"2026-05-19",type:"call",title:"Check-in · Graham Healthcare",lead:"PE008",color:"#2E7D44"},
+  {date:"2026-05-22",type:"proposal",title:"Proposal review · LFM",lead:"PE004",color:"#5E3FB5"},
+  {date:"2026-05-26",type:"meeting",title:"Monthly sync · Harris Williams",lead:"IB001",color:"#B87100"},
+  {date:"2026-05-28",type:"call",title:"Pipeline review · SunBridge",lead:"PL001",color:"#2E7D44"},
+  {date:"2026-06-02",type:"meeting",title:"Intro call · New State Capital",lead:"PE005",color:"#B87100"},
+  {date:"2026-06-05",type:"email",title:"Monthly outreach batch",lead:null,color:"#2E5BE0"},
+];
+
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+let filteredLeads = [...leads];
+let currentLead = null;
+let currentDTab = "overview";
+let currentView = "pipeline";
+let calYear = 2026, calMonth = 4; // May 2026 (0-indexed)
+let mapInstance = null;
+let callTimer = null, callSec = 0, callPhase = "idle", selOutcome = "";
+let smsHist = {};
+let activeEmailId = null;
+
+// ════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════
+const sc = s => SC[s]||"#9CA3AF";
+const oc = o => OC[o]||"#9CA3AF";
+const oi = o => OI[o] || (o||"").split(" ").map(w=>w[0]).join("").slice(0,2);
+const tt = t => TT[t]||"tx";
+const stars = n => [1,2,3].map(i=>`<span style="color:${i<=n?"#B87100":"#D1D5DB"}">★</span>`).join('');
+const fmt = s => s ? s.slice(0,20) : "—";
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.style.transform="translateX(-50%) translateY(0)";clearTimeout(window._tt);window._tt=setTimeout(()=>{t.style.transform="translateX(-50%) translateY(70px)"},2400)}
+function fmtTime(s){return Math.floor(s/60)+"m "+(s%60)+"s"}
+
+// ════════════════════════════════════════════════════════
+// FILTERING
+// ════════════════════════════════════════════════════════
+function applyFilters(){
+  const q = document.getElementById("search-inp").value.toLowerCase();
+  const fr = document.getElementById("f-region").value;
+  const ft = document.getElementById("f-type").value;
+  const fs = document.getElementById("f-stage").value;
+  const fo = document.getElementById("f-owner").value;
+  const fg = document.getElementById("f-gtm").value;
+  filteredLeads = leads.filter(l => {
+    return (fr==="All"||l.region===fr) &&
+           (ft==="All"||l.rtype===ft) &&
+           (fs==="All"||l.stage===fs) &&
+           (fo==="All"||l.owner===fo) &&
+           (fg==="All"||String(l.gtm)===fg) &&
+           (!q||(l.name+l.contact+(l.sector||"")).toLowerCase().includes(q));
+  });
+  document.getElementById("fcount").textContent = filteredLeads.length+" records";
+  document.getElementById("sbct").textContent = filteredLeads.length;
+  renderStats();
+  if(currentView==="pipeline") renderPipeline();
+  else if(currentView==="list") renderList();
+  else if(currentView==="map" && mapInstance) updateMapMarkers();
+}
+
+function clearFilters(){
+  ["f-region","f-type","f-stage","f-owner","f-gtm"].forEach(id=>{document.getElementById(id).value="All"});
+  document.getElementById("search-inp").value="";
+  applyFilters();
+}
+
+function quickFilter(group, val){
+  document.getElementById("f-"+group).value=val;
+  applyFilters();
+}
+
+// ════════════════════════════════════════════════════════
+// STATS
+// ════════════════════════════════════════════════════════
+function renderStats(){
+  const t=filteredLeads.length;
+  const ac=filteredLeads.filter(l=>l.stage==="Active Partner").length;
+  const pr=filteredLeads.filter(l=>l.stage==="Proposal").length;
+  const mt=filteredLeads.filter(l=>l.stage==="Meeting Scheduled").length;
+  const nd=filteredLeads.filter(l=>l.ndaSent).length;
+  const pe=filteredLeads.filter(l=>l.rtype==="PE Firm").length;
+  const ib=filteredLeads.filter(l=>l.rtype==="Investment Bank").length;
+  document.getElementById("stats-strip").innerHTML=`
+    <div class="sc"><div class="sv">${t}</div><div class="sl">Total Records</div><div class="sd ne">Filtered view</div></div>
+    <div class="sc"><div class="sv" style="color:var(--green)">${ac}</div><div class="sl">Active Partners</div><div class="sd up">↑ Engaged</div></div>
+    <div class="sc"><div class="sv" style="color:var(--purple)">${pr}</div><div class="sl">Proposals Out</div><div class="sd ne">Awaiting</div></div>
+    <div class="sc"><div class="sv" style="color:var(--amber)">${mt}</div><div class="sl">Meetings Sched.</div><div class="sd ne">This week</div></div>
+    <div class="sc"><div class="sv" style="color:var(--teal)">${nd}</div><div class="sl">NDAs Sent</div><div class="sd ne">In process</div></div>
+    <div class="sc"><div class="sv" style="color:var(--green2)">${pe}</div><div class="sl">PE Firms</div><div class="sd ne">Tracked</div></div>
+    <div class="sc"><div class="sv" style="color:var(--teal)">${ib}</div><div class="sl">Inv. Banks</div><div class="sd ne">Tracked</div></div>
+  `;
+}
+
+// ════════════════════════════════════════════════════════
+// PIPELINE
+// ════════════════════════════════════════════════════════
+function renderPipeline(){
+  const sm={};STAGES.forEach(s=>sm[s]=[]);
+  filteredLeads.forEach(l=>{(sm[l.stage]||sm["New Lead"]).push(l)});
+  const isDemo = l => l.name.startsWith("[DEMO]");
+  document.getElementById("pipe-wrap").innerHTML = STAGES.map(s=>{
+    const cards=sm[s];
+    const aum=cards.filter(l=>l.aum).reduce((n,l)=>n+parseFloat(l.aum.replace(/,/g,"")||0),0);
+    return `<div class="pcol">
+      <div class="pcol-h">
+        <div style="width:9px;height:9px;border-radius:50%;background:${sc(s)};flex-shrink:0"></div>
+        <div class="pcol-name" style="color:${sc(s)}">${s}</div>
+        <div class="pcol-ct" style="background:${sc(s)}20;color:${sc(s)}">${cards.length}</div>
+      </div>
+      ${aum>0?`<div style="font-size:9.5px;font-family:var(--mono);color:var(--text3);padding:0 10px 3px">$${(aum/1000).toFixed(1)}B AUM</div>`:""}
+      ${cards.map(l=>{
+        const sel=currentLead&&currentLead.id===l.id?" sel":"";
+        const demo=isDemo(l);
+        return `<div class="pcard${sel}" onclick="selectLead('${l.id}')">
+          <div class="pc-rtype">
+            <span style="width:7px;height:7px;border-radius:50%;background:${TC[l.rtype]||"#9CA3AF"}"></span>
+            <span style="color:${TC[l.rtype]||"#9CA3AF"}">${l.rtype}</span>
+            ${demo?`<span class="tag tdemo" style="margin-left:auto;font-size:9px;padding:1px 5px">DEMO</span>`:""}
+          </div>
+          <div class="pc-name">${l.name}</div>
+          <div class="pc-co">${l.contact} · ${l.title}</div>
+          <div class="pc-tags">
+            ${l.region?`<span class="tag tx">${l.region}</span>`:""}
+            ${l.ndaSent?`<span class="tag tn">NDA</span>`:""}
+            ${l.sector?`<span class="tag tx">${l.sector.split(";")[0].trim().slice(0,14)}</span>`:""}
+          </div>
+          ${l.aum?`<div class="pc-aum">$${l.aum}M AUM</div>`:""}
+          <div class="pc-foot">
+            <div class="av" style="background:${oc(l.owner)}">${oi(l.owner)}</div>
+            <div class="pc-own">${l.owner||"Unassigned"}</div>
+            <div class="pc-deals">${l.inv12m>0?l.inv12m+" deals/yr":""}</div>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }).join("");
+}
+
+// ════════════════════════════════════════════════════════
+// LIST VIEW
+// ════════════════════════════════════════════════════════
+function renderList(){
+  const cols=["Company","Type","Contact","Region","Stage","AUM","GTM","Owner","NDA","Deals/yr"];
+  document.getElementById("lt-head").innerHTML=`<tr>${cols.map((c,i)=>`<th class="${i<7?"gh":"ph"}">${c}</th>`).join("")}</tr>`;
+  document.getElementById("lt-body").innerHTML=filteredLeads.map(l=>{
+    const sel=currentLead&&currentLead.id===l.id?" sel":"";
+    const demo=l.name.startsWith("[DEMO]");
+    return `<tr class="${sel}" onclick="selectLead('${l.id}')">
+      <td><div class="lt-name"><span class="lt-dot" style="background:${sc(l.stage)}"></span>${l.name}${demo?` <span class="tag tdemo" style="font-size:9px">DEMO</span>`:""}</div></td>
+      <td><span class="tag ${tt(l.rtype)}">${l.rtype}</span></td>
+      <td>${l.contact} <span style="color:var(--text4);font-size:11px">· ${l.title}</span></td>
+      <td>${l.region||"—"}</td>
+      <td><span style="font-size:10.5px;font-weight:600;color:${sc(l.stage)}">${l.stage}</span></td>
+      <td class="mono">${l.aum?"$"+l.aum+"M":"—"}</td>
+      <td>${stars(l.gtm)}</td>
+      <td><span class="mono" style="color:${oc(l.owner)}">${l.owner||"Unassigned"}</span></td>
+      <td>${l.ndaSent?`<span class="tag tt">Yes</span>`:`<span class="tag tx">No</span>`}</td>
+      <td class="mono">${l.inv12m||"—"}</td>
+    </tr>`;
+  }).join("");
+}
+
+// ════════════════════════════════════════════════════════
+// EMAIL VIEW
+// ════════════════════════════════════════════════════════
+function renderEmailView(){
+  const ew=document.getElementById("email-wrap");
+  ew.style.display="flex";ew.style.flexDirection="column";
+  const inbox=EMAILS.filter(e=>e.folder==="inbox");
+  const sent=EMAILS.filter(e=>e.folder==="sent");
+  const drafts=EMAILS.filter(e=>e.folder==="drafts");
+  ew.innerHTML=`
+    <div class="email-toolbar">
+      <button class="btn btn-pri" onclick="openEmailCompose(currentLead)">✏ Compose</button>
+      <button class="btn">⟳ Sync</button>
+      <div style="margin-left:auto;font-size:11.5px;color:var(--text3);font-family:var(--mono)">karan@stocadvisory.com · Last sync: just now</div>
+    </div>
+    <div class="email-body">
+      <div class="email-sb">
+        <div class="efolder on" id="ef-inbox" onclick="switchFolder('inbox',this)"><span>📥</span>Inbox<span class="efolder-ct">${inbox.filter(e=>e.unread).length}</span></div>
+        <div class="efolder" id="ef-sent" onclick="switchFolder('sent',this)"><span>📤</span>Sent</div>
+        <div class="efolder" id="ef-drafts" onclick="switchFolder('drafts',this)"><span>📝</span>Drafts<span class="efolder-ct">${drafts.length}</span></div>
+        <div style="height:1px;background:var(--border);margin:8px 0"></div>
+        <div class="efolder" onclick="toast('Templates panel coming soon')"><span>📄</span>Templates</div>
+        <div style="margin-top:10px;padding:0 4px">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text4);margin-bottom:6px">Quick Links</div>
+          ${leads.filter(l=>l.email).slice(0,6).map(l=>`
+            <div style="display:flex;align-items:center;gap:6px;padding:4px 5px;cursor:pointer;border-radius:5px;transition:bg .1s" onmouseover="this.style.background='var(--surf3)'" onmouseout="this.style.background='none'" onclick="selectLead('${l.id}');sbNav(document.getElementById('sbv-email'),'email')">
+              <div class="av" style="background:${oc(l.owner)};width:17px;height:17px;font-size:7px">${oi(l.owner)}</div>
+              <span style="font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.name}</span>
+            </div>`).join("")}
+        </div>
+      </div>
+      <div id="email-list-pane" class="email-list">${renderEmailList("inbox")}</div>
+      <div id="email-thread-pane" class="email-thread" style="align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--text3)">
+        <div style="font-size:28px">✉</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text2)">Select an email to read</div>
+        <div style="font-size:12px">or compose a new message above</div>
+      </div>
+    </div>`;
+}
+
+function renderEmailList(folder){
+  const emails=EMAILS.filter(e=>e.folder===folder);
+  if(!emails.length) return `<div style="padding:20px;color:var(--text3);text-align:center;font-size:13px">No emails in ${folder}</div>`;
+  return emails.map(e=>`
+    <div class="eitem${e.unread?" unread":""}${activeEmailId===e.id?" on":""}" onclick="openEmailThread('${e.id}')">
+      <div class="ei-row"><div class="ei-fr">${e.from}</div><div class="ei-ts">${e.ts}</div></div>
+      <div class="ei-subj">${e.subj}</div>
+      <div class="ei-prev">${e.thread[0].body.replace(/\n/g," ").slice(0,60)}...</div>
+    </div>`).join("");
+}
+
+function switchFolder(f,el){
+  activeEmailId=null;
+  document.querySelectorAll(".efolder").forEach(x=>x.classList.remove("on"));el.classList.add("on");
+  document.getElementById("email-list-pane").innerHTML=renderEmailList(f);
+  document.getElementById("email-thread-pane").innerHTML=`<div style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--text3);flex:1"><div style="font-size:28px">✉</div><div style="font-size:14px;font-weight:600;color:var(--text2)">Select an email</div></div>`;
+}
+
+function openEmailThread(id){
+  activeEmailId=id;
+  const em=EMAILS.find(e=>e.id===id);if(!em) return;
+  em.unread=false;
+  const lk=leads.find(l=>l.id===em.lead);
+  const msgs=em.thread.map(m=>`
+    <div class="emsg">
+      <div class="emsg-h">
+        <div class="emsg-av" style="background:${m.dir==="out"?"#2E5BE0":"#2E7D44"}">${m.from.split(" ").map(w=>w[0]).join("").slice(0,2)}</div>
+        <div>
+          <div class="emsg-name">${m.from} ${m.dir==="draft"?`<span class="tag ta" style="font-size:9px">DRAFT</span>`:""}</div>
+          <div class="emsg-to">To: ${m.dir==="out"||m.dir==="draft"?em.to:em.email}</div>
+        </div>
+        <div class="emsg-ts">${m.ts}</div>
+      </div>
+      <div class="emsg-body">${m.body}</div>
+    </div>`).join("");
+  const pane=document.getElementById("email-thread-pane");
+  pane.style.display="flex";pane.style.flexDirection="column";pane.style.alignItems="stretch";pane.style.justifyContent="flex-start";
+  pane.innerHTML=`
+    <div class="thread-header">
+      <div class="th-subj">${em.subj}</div>
+      ${lk?`<div class="th-meta">Related to: <span style="color:var(--blue);cursor:pointer" onclick="selectLead('${lk.id}')">${lk.name} ↗</span></div>`:""}
+    </div>
+    <div class="thread-msgs">${msgs}</div>
+    <div class="thread-compose">
+      <div class="c-row"><div class="c-label">To</div><input class="c-inp" id="rep-to" value="${em.email}"></div>
+      <div class="c-row"><div class="c-label">Subject</div><input class="c-inp" id="rep-subj" value="Re: ${em.subj}"></div>
+      <textarea class="c-body" id="rep-body" placeholder="Write your reply..."></textarea>
+      <div class="c-bar">
+        <button class="btn btn-pri" style="font-size:11.5px" onclick="sendReply('${id}')">Send Reply</button>
+        <button class="btn" style="font-size:11.5px" onclick="toast('Saved to drafts')">Save Draft</button>
+        <button class="btn" style="font-size:11.5px" onclick="toast('Attach file...')">📎 Attach</button>
+        <select style="font-size:11.5px;border:1px solid var(--border);border-radius:var(--r);padding:4px 8px;font-family:var(--font);cursor:pointer;margin-left:auto" onchange="fillTemplate(this.value,'${lk?lk.contact.split(' ')[0]:'there'}')">
+          <option value="">Template...</option>
+          <option value="intro">Initial Outreach</option>
+          <option value="followup">Follow-up</option>
+          <option value="nda">NDA</option>
+          <option value="proposal">Proposal Intro</option>
+        </select>
+      </div>
+    </div>`;
+  document.querySelectorAll(".eitem").forEach(el=>{el.classList.toggle("on",el.onclick&&el.onclick.toString().includes(`'${id}'`))});
+}
+
+function fillTemplate(k,first){
+  const t=TEMPLATES[k];if(!t) return;
+  document.getElementById("rep-subj").value=t.subj;
+  document.getElementById("rep-body").value=t.body.replace("{first}",first||"there");
+}
+
+function sendReply(eid){
+  const body=document.getElementById("rep-body").value;
+  if(!body.trim()){toast("Please write a reply");return}
+  const em=EMAILS.find(e=>e.id===eid);
+  if(em) em.thread.unshift({dir:"out",from:"Karan Gupta",ts:"Just now",body});
+  toast("Reply sent to "+em.email);
+  openEmailThread(eid);
+}
+
+// ════════════════════════════════════════════════════════
+// CALENDAR VIEW
+// ════════════════════════════════════════════════════════
+function renderCalendar(){
+  const cw=document.getElementById("cal-wrap");
+  cw.style.display="flex";cw.style.flexDirection="column";
+  const monthNames=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const first=new Date(calYear,calMonth,1);
+  const last=new Date(calYear,calMonth+1,0);
+  const startDow=(first.getDay()+6)%7; // Monday start
+  cw.innerHTML=`
+    <div class="cal-header">
+      <button class="cal-nav-btn" onclick="calNav(-1)">‹</button>
+      <div class="cal-month">${monthNames[calMonth]} ${calYear}</div>
+      <button class="cal-nav-btn" onclick="calNav(1)">›</button>
+      <button class="btn" style="margin-left:10px;font-size:11.5px" onclick="calYear=2026;calMonth=4;renderCalendar()">Today</button>
+      <div style="margin-left:auto;font-size:11.5px;color:var(--text3)">Click any event to open record</div>
+    </div>
+    <div class="cal-body">
+      <div class="cal-grid">
+        ${["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=>`<div class="cal-dow">${d}</div>`).join("")}
+        ${renderCalCells(startDow,last.getDate())}
+      </div>
+    </div>
+    <div class="cal-legend">
+      <span style="font-size:11px;font-weight:600;color:var(--text3)">Legend:</span>
+      ${[["#2E7D44","Call"],["#B87100","Meeting"],["#2E5BE0","Email"],["#5E3FB5","Proposal"]].map(([c,l])=>`<div class="leg-item"><div class="leg-dot" style="background:${c}"></div>${l}</div>`).join("")}
+    </div>`;
+}
+
+function renderCalCells(startDow, daysInMonth){
+  let html="";
+  const today=new Date();
+  const isToday=(d)=>today.getFullYear()===calYear&&today.getMonth()===calMonth&&today.getDate()===d;
+  // Prev month padding
+  const prevLast=new Date(calYear,calMonth,0).getDate();
+  for(let i=startDow-1;i>=0;i--){
+    html+=`<div class="cal-cell other-month"><div class="cal-day"><div class="cal-day-num">${prevLast-i}</div></div></div>`;
+  }
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=`${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const events=CAL_EVENTS.filter(e=>e.date===dateStr);
+    const todayCls=isToday(d)?" today":"";
+    html+=`<div class="cal-cell${todayCls}">
+      <div class="cal-day"><div class="cal-day-num">${d}</div></div>
+      ${events.map(e=>`
+        <div class="cal-event" style="background:${e.color}20;color:${e.color};border-left:2px solid ${e.color}" onclick="${e.lead?`selectLead('${e.lead}');event.stopPropagation()`:""}" title="${e.title}">${e.title}</div>
+      `).join("")}
+    </div>`;
+  }
+  // Next month padding
+  const total=startDow+daysInMonth;const remaining=(7-total%7)%7;
+  for(let d=1;d<=remaining;d++) html+=`<div class="cal-cell other-month"><div class="cal-day"><div class="cal-day-num">${d}</div></div></div>`;
+  return html;
+}
+
+function calNav(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}renderCalendar()}
+
+// ════════════════════════════════════════════════════════
+// MAP VIEW
+// ════════════════════════════════════════════════════════
+function renderMapView(){
+  const mw=document.getElementById("map-wrap");
+  mw.style.display="flex";mw.style.flexDirection="column";
+  // Legend
+  document.getElementById("map-legend").innerHTML=[
+    ["#2E7D44","PE Firm"],["#147A70","Investment Bank"],["#B87100","Platform"],["#5E3FB5","Dental Practice"]
+  ].map(([c,l])=>`<div class="map-leg-item"><div class="map-leg-dot" style="background:${c}"></div>${l}</div>`).join("");
+
+  if(typeof maplibregl === "undefined"){
+    document.getElementById("map-container").innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;color:var(--text3)"><div style="font-size:32px">🗺</div><div style="font-size:15px;font-weight:600;color:var(--text2)">Map requires internet connection</div><div style="font-size:12px">MapLibre GL failed to load — check your connection</div></div>`;
+    return;
+  }
+
+  if(mapInstance){updateMapMarkers();return}
+
+  mapInstance = new maplibregl.Map({
+    container:"map-container",
+    style:"https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
+    center:[-96,38],zoom:3.8
+  });
+
+  mapInstance.addControl(new maplibregl.NavigationControl(),"top-right");
+
+  mapInstance.on("load",()=>{updateMapMarkers()});
+}
+
+function updateMapMarkers(){
+  if(!mapInstance) return;
+  // Remove existing markers
+  document.querySelectorAll(".map-marker-el").forEach(el=>el.remove());
+  filteredLeads.filter(l=>l.coords).forEach(l=>{
+    const el=document.createElement("div");
+    el.className="map-marker map-marker-el";
+    el.style.background=TC[l.rtype]||"#9CA3AF";
+    el.style.width="26px";el.style.height="26px";
+    el.style.borderRadius="50%";el.style.border="2.5px solid #fff";
+    el.style.display="flex";el.style.alignItems="center";el.style.justifyContent="center";
+    el.style.fontSize="9px";el.style.fontWeight="800";el.style.color="#fff";el.style.cursor="pointer";
+    el.style.boxShadow="0 2px 8px rgba(0,0,0,.25)";el.style.transition="transform .15s";
+    el.textContent=l.name.replace("[DEMO] ","").split(" ").slice(0,2).map(w=>w[0]).join("");
+    el.addEventListener("mouseenter",()=>el.style.transform="scale(1.15)");
+    el.addEventListener("mouseleave",()=>el.style.transform="scale(1)");
+
+    const popup=new maplibregl.Popup({offset:18,closeButton:false,maxWidth:"240px"}).setHTML(`
+      <div class="map-popup-name">${l.name}</div>
+      <div class="map-popup-type" style="color:${TC[l.rtype]||"#9CA3AF"}">${l.rtype}</div>
+      <div class="map-popup-row"><span>Region</span><span>${l.region||"—"}</span></div>
+      <div class="map-popup-row"><span>Contact</span><span>${l.contact}</span></div>
+      ${l.aum?`<div class="map-popup-row"><span>AUM</span><span style="color:var(--green)">$${l.aum}M</span></div>`:""}
+      <div class="map-popup-row"><span>Stage</span><span style="color:${sc(l.stage)}">${l.stage}</span></div>
+      <button class="map-popup-btn" onclick="selectLead('${l.id}');document.querySelectorAll('.maplibregl-popup').forEach(p=>p.remove())">Open Record →</button>
+    `);
+
+    new maplibregl.Marker({element:el})
+      .setLngLat(l.coords)
+      .setPopup(popup)
+      .addTo(mapInstance);
+
+    el.addEventListener("click",()=>popup.addTo(mapInstance));
+  });
+}
+
+// ════════════════════════════════════════════════════════
+// VIEW MANAGEMENT
+// ════════════════════════════════════════════════════════
+function setView(v,el){
+  currentView=v;
+  document.querySelectorAll(".tnav").forEach(t=>t.classList.remove("on"));
+  if(el) el.classList.add("on");
+  document.getElementById("pipe-wrap").style.display=v==="pipeline"?"flex":"none";
+  document.getElementById("list-wrap").style.display=v==="list"?"block":"none";
+  document.getElementById("email-wrap").style.display=v==="email"?"flex":"none";
+  document.getElementById("cal-wrap").style.display=v==="cal"?"flex":"none";
+  document.getElementById("map-wrap").style.display=v==="map"?"flex":"none";
+  if(v==="pipeline") renderPipeline();
+  else if(v==="list") renderList();
+  else if(v==="email") renderEmailView();
+  else if(v==="cal") renderCalendar();
+  else if(v==="map") renderMapView();
+}
+
+function sbNav(el,view){
+  document.querySelectorAll(".sbi[id^='sbv-']").forEach(i=>i.classList.remove("on"));
+  el.classList.add("on");
+  const m={"pipeline":"tn-pipeline","list":"tn-list","email":"tn-email","cal":"tn-cal","map":"tn-map"};
+  setView(view,document.getElementById(m[view]));
+}
+
+// ════════════════════════════════════════════════════════
+// DETAIL PANEL
+// ════════════════════════════════════════════════════════
+function selectLead(id){
+  currentLead=leads.find(l=>l.id===id);
+  if(!currentLead) return;
+  renderPipeline();renderList();
+  const ic=document.getElementById("dp-ic");
+  const initials=currentLead.name.replace("[DEMO] ","").split(" ").slice(0,2).map(w=>w[0]).join("");
+  ic.textContent=initials;
+  ic.style.background=(TC[currentLead.rtype]||"#9CA3AF")+"33";
+  ic.style.color=TC[currentLead.rtype]||"#fff";
+  document.getElementById("dp-name").textContent=currentLead.name;
+  const demo=currentLead.name.startsWith("[DEMO]");
+  document.getElementById("dp-meta").innerHTML=`
+    <span class="tag ${tt(currentLead.rtype)}">${currentLead.rtype}</span>
+    ${currentLead.region?`<span class="tag tx">${currentLead.region}</span>`:""}
+    <span style="font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:4px;background:${sc(currentLead.stage)}18;color:${sc(currentLead.stage)}">${currentLead.stage}</span>
+    ${currentLead.ndaSent?`<span class="tag tt">NDA</span>`:""}
+    ${demo?`<span class="tag tdemo">DEMO</span>`:""}
+  `;
+  document.getElementById("dp").classList.add("open");
+  renderDTab(currentDTab);
+}
+
+function closeDetail(){
+  document.getElementById("dp").classList.remove("open");
+  currentLead=null;renderPipeline();renderList();
+}
+
+function setDTab(tab,el){
+  currentDTab=tab;
+  document.querySelectorAll(".dtab").forEach(t=>t.classList.remove("on"));
+  el.classList.add("on");
+  if(currentLead) renderDTab(tab);
+}
+
+function renderDTab(tab){
+  const body=document.getElementById("dp-body");
+  if(tab==="overview") body.innerHTML=renderOverview(currentLead);
+  else if(tab==="activity") body.innerHTML=renderActivity(currentLead);
+  else if(tab==="fields") body.innerHTML=renderFields(currentLead);
+  else if(tab==="linked") body.innerHTML=renderLinked(currentLead);
+  else if(tab==="news") body.innerHTML=renderNews(currentLead);
+}
+
+function renderOverview(l){
+  return `
+    <div class="ds"><div class="ds-title">Pipeline Stage</div>
+      <div class="stage-btns">${STAGES.map(s=>`<button class="sbtn${l.stage===s?" on":""}" onclick="moveStage('${s}')">${s}</button>`).join("")}</div></div>
+    <div class="ds"><div class="ds-title">Contact</div>
+      <div class="fr"><div class="fl">Name</div><div class="fv">${l.contact}</div></div>
+      <div class="fr"><div class="fl">Title</div><div class="fv" style="color:var(--text3)">${l.title}</div></div>
+      <div class="fr"><div class="fl">Email</div><div class="fv"><a class="fv link" href="mailto:${l.email}">${l.email||"—"}</a></div></div>
+      ${l.phone?`<div class="fr"><div class="fl">Phone</div><div class="fv mono">${l.phone}</div></div>`:""}
+      <div class="fr"><div class="fl">Website</div><div class="fv"><a class="fv link" href="${l.website}" target="_blank">${(l.website||"—").replace(/https?:\/\//,"").slice(0,30)}</a></div></div>
+      ${l.linkedin?`<div class="fr"><div class="fl">LinkedIn</div><div class="fv"><a class="fv link" href="${l.linkedin}" target="_blank">View ↗</a></div></div>`:""}
+    </div>
+    <div class="ds"><div class="ds-title">Firm Profile</div>
+      <div class="fr"><div class="fl">Record Type</div><div class="fv"><span class="tag ${tt(l.rtype)}">${l.rtype}</span></div></div>
+      <div class="fr"><div class="fl">Region</div><div class="fv ed" onclick="editFV(this,'region')">${l.region||"—"}</div></div>
+      <div class="fr"><div class="fl">Acq. Region</div><div class="fv ed" onclick="editFV(this,'acqRegion')">${l.acqRegion||"—"}</div></div>
+      <div class="fr"><div class="fl">Investor Type</div><div class="fv ed" onclick="editFV(this,'peType')">${l.peType||"—"}</div></div>
+      <div class="fr"><div class="fl">Sector</div><div class="fv ed" onclick="editFV(this,'sector')">${l.sector||"—"}</div></div>
+      <div class="fr"><div class="fl">Company Size</div><div class="fv">${l.size||"—"}</div></div>
+      <div class="fr"><div class="fl">Owner</div><div class="fv"><span style="color:${oc(l.owner)};font-weight:500">${l.owner||"Unassigned"}</span></div></div>
+    </div>
+    ${l.aum||l.inv12m?`<div class="ds"><div class="ds-title">Investment Data</div>
+      ${l.aum?`<div class="fr"><div class="fl">AUM</div><div class="fv mono" style="color:var(--green)">$${l.aum}M</div></div>`:""}
+      ${l.inv12m?`<div class="fr"><div class="fl">Deals 6M/12M/2Y</div><div class="fv mono">${l.inv6m} / ${l.inv12m} / ${l.inv2y}</div></div>`:""}
+      ${l.portfolio?`<div class="fr"><div class="fl">Portfolio</div><div class="fv" style="font-size:11.5px;line-height:1.5">${l.portfolio}</div></div>`:""}
+    </div>`:""}
+    <div class="ds"><div class="ds-title pp">STOC Intelligence</div>
+      <div class="fr"><div class="fl">GTM Score</div><div class="fv">${stars(l.gtm)} (${l.gtm}/3)</div></div>
+      <div class="fr"><div class="fl">Service Line</div><div class="fv ed" onclick="editFV(this,'service')">${l.service||"—"}</div></div>
+      <div class="fr"><div class="fl">NDA Sent</div><div class="fv">${l.ndaSent?`<span class="tag tt">Yes</span>`:`<span class="tag tx">No</span>`} <button onclick="toggleNda()" style="font-size:10px;border:1px solid var(--border);background:none;border-radius:4px;padding:1px 6px;cursor:pointer;color:var(--text2);margin-left:6px;font-family:var(--font)">Toggle</button></div></div>
+      <div class="fr"><div class="fl">Questionnaire</div><div class="fv">${l.questionnaire||"Not Sent"}</div></div>
+      <div class="fr"><div class="fl">GTM Priority 1</div><div class="fv ed" onclick="editFV(this,'gtmP1')">${l.gtmP1||"—"}</div></div>
+      <div class="fr"><div class="fl">GTM Priority 2</div><div class="fv ed" onclick="editFV(this,'gtmP2')">${l.gtmP2||"—"}</div></div>
+      ${l.desc?`<div class="fr"><div class="fl">Description</div><div class="fv" style="font-size:12px;color:var(--text3);line-height:1.5">${l.desc}</div></div>`:""}
+    </div>`;
+}
+
+function moveStage(s){if(!currentLead)return;currentLead.stage=s;toast("Stage: "+s);selectLead(currentLead.id)}
+function toggleNda(){if(!currentLead)return;currentLead.ndaSent=!currentLead.ndaSent;toast(currentLead.ndaSent?"NDA sent":"NDA cleared");selectLead(currentLead.id)}
+function editFV(el,field){
+  const inp=document.createElement("input");inp.className="ie";inp.value=el.textContent==="—"?"":el.textContent;
+  el.replaceWith(inp);inp.focus();
+  inp.onblur=()=>{currentLead[field]=inp.value||"—";toast("Field updated");renderDTab("overview")};
+  inp.onkeydown=e=>{if(e.key==="Enter")inp.blur()};
+}
+
+function renderActivity(l){
+  const form=`<div style="display:flex;flex-direction:column;gap:7px;padding:10px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--border);margin-bottom:4px">
+    <div style="display:flex;gap:6px">
+      <button class="btn" style="font-size:11px;padding:4px 10px;color:#1B5E20;border-color:#A3D9A8;background:#E8F5E9" onclick="openCallModal(currentLead)">☎ Call</button>
+      <button class="btn" style="font-size:11px;padding:4px 10px;color:var(--blue);border-color:#AFC5F5;background:var(--blue-l)" onclick="openEmailCompose(currentLead)">✉ Email</button>
+      <button class="btn" style="font-size:11px;padding:4px 10px;color:var(--amber);border-color:#F0CE87;background:var(--amber-l)" onclick="openSmsModal(currentLead)">💬 SMS</button>
+    </div>
+    <textarea id="note-area" placeholder="Add a note..." style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:7px 10px;font-size:12px;font-family:var(--font);resize:none;min-height:55px;outline:none"></textarea>
+    <div style="display:flex;justify-content:flex-end"><button class="btn btn-pri" style="font-size:11px;padding:4px 12px" onclick="addNote()">+ Add Note</button></div>
+  </div>`;
+  return form+`<div>${(l.activities||[]).map((a,i)=>`
+    <div class="aitem">
+      <div class="aicol">
+        <div class="aiic" style="background:${a.bg};color:${a.ic}">${a.icon}</div>
+        ${i<l.activities.length-1?'<div class="ailine"></div>':""}
+      </div>
+      <div class="aibody">
+        <div class="ait">${a.title}</div><div class="ais">${a.sub}</div>
+        ${a.note?`<div class="ain">${a.note}</div>`:""}
+      </div>
+    </div>`).join("")}</div>`;
+}
+
+function addNote(){
+  const txt=document.getElementById("note-area").value.trim();
+  if(!txt||!currentLead)return;
+  currentLead.activities.unshift({icon:"📝",bg:"#F3F4F6",ic:"var(--text3)",title:"Note added",sub:"Just now · KG",note:txt});
+  toast("Note saved");renderDTab("activity");
+}
+
+function renderFields(l){
+  const rows=customFields.map(cf=>`
+    <div class="cf-row">
+      <div class="cf-name">${cf.name}</div>
+      <div class="cf-type">${cf.type}</div>
+      <div class="cf-val" onclick="editCFVal(this,'${cf.name}')">${getCFVal(l,cf.name)}</div>
+      <button class="cf-del" onclick="removeCF('${cf.name}')">✕</button>
+    </div>`).join("");
+  return `<div class="ds"><div class="ds-title pp">Custom Fields (${customFields.length})</div>${rows}
+    <button class="btn" style="width:100%;justify-content:center;margin-top:6px;font-size:11.5px" onclick="openCFModal()">+ Add Custom Field</button></div>`;
+}
+
+function getCFVal(l,n){
+  const m={"Investor-ID":l.investorId||"—","Total Investments (2yr)":l.inv2y||"—","GTM Priority #1":l.gtmP1||"—","GTM Priority #2":l.gtmP2||"—","NDA Sent":l.ndaSent?"Yes":"No","Questionnaire":l.questionnaire||"Not Sent","Acquisition Region":l.acqRegion||"—","STOC Service Line":l.service||"—"};
+  return m[n]||"—";
+}
+
+function editCFVal(el,name){
+  const fmap={"GTM Priority #1":"gtmP1","GTM Priority #2":"gtmP2","Acquisition Region":"acqRegion","STOC Service Line":"service","NDA Sent":"ndaSent","Questionnaire":"questionnaire","Investor-ID":"investorId"};
+  const inp=document.createElement("input");
+  inp.style.cssText="background:var(--blue-l);border:1px solid #AFC5F5;border-radius:3px;padding:1px 6px;font-size:12px;font-family:var(--font);color:var(--text);outline:none;width:100%";
+  inp.value=el.textContent==="—"?"":el.textContent;el.replaceWith(inp);inp.focus();
+  inp.onblur=()=>{const k=fmap[name];if(k&&currentLead)currentLead[k]=inp.value||null;toast("Updated: "+name);renderDTab("fields")};
+  inp.onkeydown=e=>{if(e.key==="Enter")inp.blur()};
+}
+
+function removeCF(name){customFields=customFields.filter(cf=>cf.name!==name);toast("Field removed");renderDTab("fields")}
+
+function renderLinked(l){
+  if(!l.linked||!l.linked.length) return `<div style="display:flex;flex-direction:column;align-items:center;padding:28px;gap:8px;color:var(--text3)"><div style="font-size:24px">🔗</div><div style="font-size:13px;font-weight:600;color:var(--text2)">No linked records</div><button class="btn btn-pri" style="margin-top:6px;font-size:11.5px" onclick="toast('Link records — coming soon')">+ Link a Record</button></div>`;
+  const cards=l.linked.map(lid=>{
+    const r=leads.find(x=>x.id===lid);if(!r)return "";
+    const init=r.name.replace("[DEMO] ","").split(" ").slice(0,2).map(w=>w[0]).join("");
+    return `<div class="lcard" onclick="selectLead('${r.id}')">
+      <div class="lc-ico" style="background:${TC[r.rtype]||"#9CA3AF"}">${init}</div>
+      <div><div class="lc-name">${r.name}</div><div class="lc-sub">${r.rtype} · ${r.region||"—"} · ${r.stage}</div></div>
+      <div class="lc-arr">→</div></div>`;
+  }).join("");
+  const relMap={
+    "Platform":"This platform ← Parent PE Firm · This platform → Add-on Practices",
+    "PE Firm":"This PE Firm → Owned Platforms → Practices · PE Firm ↔ Inv. Banks",
+    "Investment Bank":"PE Clients → This Bank → Mandates",
+    "Dental Practice":"This Practice → Acquiring Platform → Parent PE Firm",
+  };
+  return `<div class="ds"><div class="ds-title">Linked Records (${l.linked.length})</div>${cards}
+    <button class="btn" style="width:100%;justify-content:center;margin-top:6px;font-size:11.5px" onclick="toast('Link a record — coming soon')">+ Link a Record</button></div>
+    <div class="ds"><div class="ds-title pg">Relationship Map</div>
+    <div style="font-size:12px;color:var(--text2);padding:9px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--border);line-height:1.7">${relMap[l.rtype]||"Link records to define relationships."}</div></div>`;
+}
+
+function renderNews(l){
+  const has=l.news&&l.news.length;
+  return `<div class="news-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <div class="npulse"></div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green)">Live News Feed</div>
+      <div style="margin-left:auto;font-size:10px;font-family:var(--mono);color:var(--text3)" id="nts">${has?"Updated recently":"Not loaded"}</div>
+    </div>
+    ${has?l.news.map(n=>`<div style="padding:7px 0;border-bottom:1px solid #A3D9A8"><div style="font-size:12.5px;font-weight:500;color:var(--text);line-height:1.4">${n.headline}</div><div style="font-size:10.5px;color:var(--text3);font-family:var(--mono);margin-top:2px">${n.source}</div></div>`).join(""):`<div style="color:var(--text3);font-size:12.5px;padding:8px 0">No news for ${l.name.replace("[DEMO] ","")} yet.</div>`}
+    <button class="btn btn-gr" style="margin-top:10px;width:100%;justify-content:center;font-size:11.5px" onclick="refreshNews(this)">⟳ Refresh via Claude Search</button>
+  </div>
+  <div class="ds" style="margin-top:4px"><div class="ds-title">AI Summary</div>
+    <div id="nsumm" style="font-size:12.5px;color:var(--text2);line-height:1.6;padding:9px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--border)">${l.newsSummary||"Run refresh to generate."}</div>
+  </div>
+  <div class="ds"><div class="ds-title">Notes on News</div>
+    <textarea style="width:100%;background:var(--surf2);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:var(--r);font-family:var(--font);font-size:12px;resize:vertical;min-height:65px;outline:none" placeholder="Your commentary...">${l.newsNotes||""}</textarea>
+  </div>`;
+}
+
+function refreshNews(btn){
+  btn.innerHTML='<span class="spin">⟳</span> Fetching...';btn.disabled=true;
+  setTimeout(()=>{
+    if(currentLead){
+      currentLead.news=[
+        {headline:currentLead.name.replace("[DEMO] ","")+" signals new deal activity in "+currentLead.region+" market",source:"PR Newswire · just now"},
+        {headline:"Lower middle-market PE deal activity up 18% in Q2 2026 — "+currentLead.region+" leads",source:"PE Hub · 2d ago"},
+      ];
+      currentLead.newsSummary="Recent activity from "+currentLead.name.replace("[DEMO] ","")+" aligns well with current STOC pipeline focus. Good timing for an outreach touchpoint.";
+    }
+    btn.innerHTML="⟳ Refresh via Claude Search";btn.disabled=false;
+    if(document.getElementById("nts")) document.getElementById("nts").textContent="Updated just now";
+    renderDTab("news");toast("News refreshed");
+  },1800);
+}
+
+// ════════════════════════════════════════════════════════
+// CALL MODAL
+// ════════════════════════════════════════════════════════
+function openCallModal(lead){
+  const name=lead?lead.name.replace("[DEMO] ",""):"Unknown";
+  const contact=lead?lead.contact:"—";
+  callPhase="idle";callSec=0;selOutcome="";clearInterval(callTimer);
+  showModal(`<div class="modal sm" onclick="e=>e.stopPropagation()">
+    <div class="mh"><div><div class="mt">☎ Make a Call</div><div class="ms">${contact} · ${name}</div></div><button class="dp-close" onclick="closeModal()" style="background:var(--surf3);color:var(--text3)">✕</button></div>
+    <div class="mb">
+      <div class="call-disp">
+        <div class="cn">${name}</div><div class="cc">${contact}</div>
+        <div class="cs csi" id="cstatus">Ready to call</div>
+        <div class="ct" id="ctimer">0:00</div>
+      </div>
+      <div><label class="mlab">Phone number</label><input class="minp" id="call-num" value="${lead&&lead.phone||""}" placeholder="+1 (555) 000-0000"></div>
+      <div class="call-btns">
+        <button class="cbtn cb-m" id="cb-mute" disabled><span>🔇</span><span style="font-size:10px">Mute</span></button>
+        <button class="cbtn cb-h" id="cb-hold" disabled><span>⏸</span><span style="font-size:10px">Hold</span></button>
+        <button class="cbtn cb-a" id="cb-main" onclick="handleCallBtn()"><span>☎</span><span style="font-size:10px">Call</span></button>
+      </div>
+      <div id="oc-wrap" style="display:none;margin-top:4px">
+        <div class="mlab" style="margin-bottom:6px">Call Outcome</div>
+        <div class="oc-row">${["Connected","Left Voicemail","No Answer","Wrong Number","Call Back Later"].map(o=>`<div class="ocbtn" onclick="selOC(this,'${o}')">${o}</div>`).join("")}</div>
+      </div>
+      <div id="cnw" style="display:none"><label class="mlab" style="margin-top:6px">Call Notes</label><textarea class="mtxt" id="call-notes" style="min-height:70px"></textarea></div>
+    </div>
+    <div class="mf" id="call-foot"><button class="btn" onclick="closeModal()">Cancel</button></div>
+  </div>`);
+}
+
+function handleCallBtn(){
+  const btn=document.getElementById("cb-main");
+  if(callPhase==="idle"){
+    callPhase="ringing";
+    document.getElementById("cstatus").className="cs csr";document.getElementById("cstatus").textContent="Ringing...";
+    btn.className="cbtn cb-e";btn.innerHTML="<span>✕</span><span style='font-size:10px'>End</span>";
+    setTimeout(()=>{
+      if(callPhase!=="ringing")return;callPhase="connected";
+      document.getElementById("cstatus").className="cs csl";document.getElementById("cstatus").textContent="Connected";
+      document.getElementById("ctimer").style.display="block";
+      btn.className="cbtn cb-ea";
+      document.getElementById("cb-mute").disabled=false;document.getElementById("cb-hold").disabled=false;
+      callTimer=setInterval(()=>{callSec++;const m=Math.floor(callSec/60),s=callSec%60;document.getElementById("ctimer").textContent=m+":"+(s<10?"0":"")+s},1000);
+    },2200);
+  } else {
+    clearInterval(callTimer);callPhase="ended";
+    document.getElementById("cstatus").className="cs cse";document.getElementById("cstatus").textContent="Call ended · "+fmtTime(callSec);
+    btn.style.display="none";document.getElementById("cb-mute").disabled=true;document.getElementById("cb-hold").disabled=true;
+    document.getElementById("oc-wrap").style.display="block";document.getElementById("cnw").style.display="block";
+    document.getElementById("call-foot").innerHTML=`<button class="btn" onclick="closeModal()">Discard</button><button class="btn btn-pri" onclick="saveCall()">Save & Log</button>`;
+  }
+}
+
+function selOC(el,v){selOutcome=v;document.querySelectorAll(".ocbtn").forEach(b=>b.classList.remove("on"));el.classList.add("on")}
+
+function saveCall(){
+  if(!currentLead){closeModal();return}
+  const notes=document.getElementById("call-notes").value;
+  currentLead.activities.unshift({icon:"☎",bg:"#E8F5E9",ic:"#1B5E20",title:`Call · ${fmtTime(callSec)} · ${selOutcome||"Connected"}`,sub:"Just now · KG",note:notes||"Call completed."});
+  closeModal();if(document.getElementById("dp").classList.contains("open"))renderDTab("activity");
+  toast("Call logged: "+(selOutcome||"Connected"));
+}
+
+// ════════════════════════════════════════════════════════
+// EMAIL COMPOSE MODAL
+// ════════════════════════════════════════════════════════
+function openEmailCompose(lead){
+  const to=lead?lead.email:"";const first=lead?lead.contact.split(" ")[0]:"there";const firm=lead?lead.name:"";
+  showModal(`<div class="modal lg" onclick="e=>e.stopPropagation()">
+    <div class="mh"><div><div class="mt">✉ Compose Email</div><div class="ms">${firm||"New email"}</div></div><button class="dp-close" onclick="closeModal()" style="background:var(--surf3);color:var(--text3)">✕</button></div>
+    <div class="mb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="mlab">To</label><input class="minp" id="ec-to" value="${to}" placeholder="recipient@firm.com"></div>
+        <div><label class="mlab">From</label><select class="minp"><option>karan@stocadvisory.com</option><option>team@stocadvisory.com</option></select></div>
+      </div>
+      <div><label class="mlab">Template</label>
+        <select class="minp" onchange="fillEC(this.value,'${first}','${firm.replace(/'/g,"\\'")}')">
+          <option value="">— Pick a template —</option>
+          <option value="intro">Initial Outreach</option><option value="followup">Follow-up #1</option>
+          <option value="nda">NDA Introduction</option><option value="proposal">Proposal Intro</option>
+        </select></div>
+      <div><label class="mlab">Subject</label><input class="minp" id="ec-subj" placeholder="Subject line"></div>
+      <div><label class="mlab">Body</label><textarea class="mtxt" id="ec-body" style="min-height:180px" placeholder="Write your email..."></textarea></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer"><input type="checkbox" id="ec-track"> Track opens</label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer"><input type="checkbox" id="ec-log" checked> Log to activity</label>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn" style="font-size:11.5px" onclick="closeModal();toast('Saved to drafts')">Save Draft</button>
+      <button class="btn btn-pri" onclick="sendEmailCompose('${lead?lead.id:""}')">Send Email</button>
+    </div>
+  </div>`);
+}
+
+function fillEC(k,first,firm){
+  const t=TEMPLATES[k];if(!t)return;
+  document.getElementById("ec-subj").value=t.subj;
+  document.getElementById("ec-body").value=t.body.replace("{first}",first||"there");
+}
+
+function sendEmailCompose(leadId){
+  const to=document.getElementById("ec-to").value;const subj=document.getElementById("ec-subj").value;const body=document.getElementById("ec-body").value;
+  if(!to||!subj){toast("Fill in To and Subject");return}
+  if(document.getElementById("ec-log").checked&&leadId){
+    const l=leads.find(r=>r.id===leadId);
+    if(l)l.activities.unshift({icon:"✉",bg:"#EBF0FF",ic:"#2E5BE0",title:"Email sent: "+subj,sub:"Just now · KG"});
+    EMAILS.unshift({id:"E_"+Date.now(),folder:"sent",unread:false,from:"Karan Gupta",email:to,to,subj,ts:"Just now",lead:leadId,thread:[{dir:"out",from:"Karan Gupta",ts:"Just now",body}]});
+  }
+  closeModal();if(document.getElementById("dp").classList.contains("open"))renderDTab("activity");
+  toast("Email sent to "+to);
+}
+
+// ════════════════════════════════════════════════════════
+// SMS MODAL
+// ════════════════════════════════════════════════════════
+function openSmsModal(lead){
+  const name=lead?lead.name.replace("[DEMO] ",""):"Unknown";const id=lead?lead.id:"tmp";const first=lead?lead.contact.split(" ")[0]:"there";
+  if(!smsHist[id])smsHist[id]=[{dir:"out",text:"Hi "+first+" — it's Karan from STOC Advisory. Just following up on my email. Is this a good number?",ts:"May 7, 2:00 PM"}];
+  const bubs=smsHist[id].map(m=>`<div class="sms-bub sms-${m.dir}">${m.text}<span class="sms-ts">${m.ts}</span></div>`).join("");
+  showModal(`<div class="modal" onclick="e=>e.stopPropagation()">
+    <div class="mh"><div><div class="mt">💬 SMS</div><div class="ms">${lead?lead.contact:""} · ${name}</div></div><button class="dp-close" onclick="closeModal()" style="background:var(--surf3);color:var(--text3)">✕</button></div>
+    <div class="mb">
+      <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:4px">From: STOC Advisory (+1 615 *** ****)</div>
+      <div class="sms-feed" id="sms-feed">${bubs}</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px">
+        ${["Following up on my email — 15 min this week?","Happy to send more details — what works best?","Great speaking — sending proposal now."].map(t=>`<div class="tag tx" style="cursor:pointer;font-size:11px" onclick="document.getElementById('sms-inp').value='${t}'">${t.slice(0,28)}...</div>`).join("")}
+      </div>
+      <textarea class="mtxt" id="sms-inp" placeholder="Type a message..." style="min-height:55px;resize:none;margin-top:4px" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendSms('${id}',this)}"></textarea>
+    </div>
+    <div class="mf"><button class="btn" onclick="closeModal()">Close</button><button class="btn btn-pri" onclick="sendSms('${id}',document.getElementById('sms-inp'))">Send SMS</button></div>
+  </div>`);
+}
+
+function sendSms(lid,inp){
+  const txt=inp.value.trim();if(!txt)return;
+  if(!smsHist[lid])smsHist[lid]=[];
+  smsHist[lid].push({dir:"out",text:txt,ts:"Just now"});inp.value="";
+  const feed=document.getElementById("sms-feed");
+  if(feed){const b=document.createElement("div");b.className="sms-bub sms-out";b.innerHTML=txt+`<span class="sms-ts">Just now</span>`;feed.appendChild(b);feed.scrollTop=feed.scrollHeight}
+  if(currentLead&&currentLead.id===lid)currentLead.activities.unshift({icon:"💬",bg:"#FFF4DC",ic:"#B87100",title:"SMS sent",sub:"Just now · KG",note:txt});
+  toast("SMS sent");
+}
+
+// ════════════════════════════════════════════════════════
+// CUSTOM FIELD MODAL
+// ════════════════════════════════════════════════════════
+function openCFModal(){
+  showModal(`<div class="modal sm" onclick="e=>e.stopPropagation()">
+    <div class="mh"><div class="mt">⊕ Add Custom Field</div><button class="dp-close" onclick="closeModal()" style="background:var(--surf3);color:var(--text3)">✕</button></div>
+    <div class="mb">
+      <div><label class="mlab">Field Name</label><input class="minp" id="cf-n" placeholder="e.g. Acquisition Focus"></div>
+      <div><label class="mlab">Field Type</label><select class="minp" id="cf-t"><option>Text</option><option>Number</option><option>Currency</option><option>Date</option><option>Yes/No</option><option>Dropdown</option><option>Multi-Select</option><option>URL</option><option>User</option><option>Live Feed</option></select></div>
+      <div><label class="mlab">Group</label><select class="minp" id="cf-g"><option>Firm Intelligence</option><option>STOC</option><option>Deal Info</option><option>Custom</option></select></div>
+      <div><label class="mlab">Apply To</label><select class="minp"><option>All Records</option><option>PE Firms Only</option><option>Investment Banks Only</option><option>This Record Only</option></select></div>
+    </div>
+    <div class="mf"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-pri" onclick="saveCF()">Add Field</button></div>
+  </div>`);
+}
+
+function saveCF(){
+  const name=document.getElementById("cf-n").value.trim();if(!name){toast("Enter a field name");return}
+  customFields.push({name,type:document.getElementById("cf-t").value,group:document.getElementById("cf-g").value});
+  closeModal();toast("Custom field added: "+name);if(currentDTab==="fields"&&currentLead)renderDTab("fields");
+}
+
+// ════════════════════════════════════════════════════════
+// NEW RECORD MODAL
+// ════════════════════════════════════════════════════════
+function openNewRecordModal(){
+  showModal(`<div class="modal lg" onclick="e=>e.stopPropagation()">
+    <div class="mh"><div class="mt">+ New Record</div></div>
+    <div class="mb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="mlab">Company Name *</label><input class="minp" id="nl-n" placeholder="Firm name"></div>
+        <div><label class="mlab">Record Type *</label><select class="minp" id="nl-t"><option>PE Firm</option><option>Investment Bank</option><option>Platform</option><option>Dental Practice</option></select></div>
+        <div><label class="mlab">Contact Name *</label><input class="minp" id="nl-c" placeholder="First Last"></div>
+        <div><label class="mlab">Title</label><input class="minp" id="nl-ti" placeholder="Vice President"></div>
+        <div><label class="mlab">Email</label><input class="minp" id="nl-e" placeholder="email@firm.com"></div>
+        <div><label class="mlab">Phone</label><input class="minp" id="nl-p" placeholder="+1 ..."></div>
+        <div><label class="mlab">Region</label><select class="minp" id="nl-r"><option>Northeast</option><option>South</option><option>Midwest</option><option>West</option><option>National</option></select></div>
+        <div><label class="mlab">Stage</label><select class="minp" id="nl-s">${STAGES.map(s=>`<option>${s}</option>`).join("")}</select></div>
+        <div><label class="mlab">AUM ($M)</label><input class="minp" id="nl-a" placeholder="500"></div>
+        <div><label class="mlab">Owner</label><select class="minp" id="nl-o"><option>Peyton Evans</option><option>Lucius Burch</option><option>Andrew Swihart</option><option>Karan Gupta</option></select></div>
+      </div>
+      <div><label class="mlab">Sector</label><input class="minp" id="nl-sec" placeholder="PE Companies, Healthcare, etc."></div>
+      <div><label class="mlab">Description</label><textarea class="mtxt" id="nl-d" style="min-height:60px" placeholder="Background notes..."></textarea></div>
+    </div>
+    <div class="mf"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-pri" onclick="saveNewRecord()">Create Record</button></div>
+  </div>`);
+}
+
+function saveNewRecord(){
+  const name=document.getElementById("nl-n").value.trim();const contact=document.getElementById("nl-c").value.trim();
+  if(!name||!contact){toast("Name and contact are required");return}
+  const r={id:"REC_"+Math.random().toString(36).slice(2,8),rtype:document.getElementById("nl-t").value,name,contact,title:document.getElementById("nl-ti").value,email:document.getElementById("nl-e").value,phone:document.getElementById("nl-p").value,website:"",region:document.getElementById("nl-r").value,aum:document.getElementById("nl-a").value,inv6m:0,inv12m:0,inv2y:0,peType:"PE/Buyout",sector:document.getElementById("nl-sec").value,service:"",portfolio:"",linkedin:"",owner:document.getElementById("nl-o").value,gtm:1,stage:document.getElementById("nl-s").value,desc:document.getElementById("nl-d").value,acqRegion:"",size:"",ndaSent:false,questionnaire:"Not Sent",gtmP1:"",gtmP2:"",investorId:"",coords:null,activities:[{icon:"⊕",bg:"#F3F4F6",ic:"#9CA3AF",title:"Record created manually",sub:"Just now · KG"}],linked:[]};
+  leads.unshift(r);closeModal();applyFilters();toast("Record created: "+name);
+}
+
+// ════════════════════════════════════════════════════════
+// MODAL HELPERS
+// ════════════════════════════════════════════════════════
+function showModal(html){
+  closeModal();
+  const ov=document.createElement("div");ov.className="ov";ov.id="mod-ov";ov.innerHTML=html;
+  ov.onclick=e=>{if(e.target===ov)closeModal()};document.body.appendChild(ov);
+}
+function closeModal(){clearInterval(callTimer);const ov=document.getElementById("mod-ov");if(ov)ov.remove()}
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+document.getElementById("pipe-wrap").style.display="flex";
+document.getElementById("list-wrap").style.display="none";
+document.getElementById("email-wrap").style.display="none";
+document.getElementById("cal-wrap").style.display="none";
+document.getElementById("map-wrap").style.display="none";
+applyFilters();
+</script>
+</body>
+</html>
